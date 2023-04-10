@@ -175,7 +175,7 @@ class _SignInState extends State<SignIn> {
                         onPrimary: Color(0xFF0F2027),
                         padding: EdgeInsets.symmetric(horizontal: 50.0),
                       ),
-                      child: Text('Sign In', style: TextStyle(fontSize: 16.0)),
+                      child: Text('Log In', style: TextStyle(fontSize: 16.0)),
                       onPressed: () {
                         _auth.signInWithEmailAndPassword(email, password);
                       },
