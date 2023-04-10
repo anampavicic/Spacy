@@ -29,9 +29,7 @@ class _WrapperState extends State<Wrapper> {
             return Home();
           } else {
             // The user is not logged in, so show the login screen
-            return MaterialApp(
-              home: Authenticate(),
-            );
+            return Authenticate();
           }
         }
       },
