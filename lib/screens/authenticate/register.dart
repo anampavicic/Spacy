@@ -1,12 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:spacy/services/auth.dart';
 
 class Register extends StatefulWidget {
   //  const Register({Key? key}) : super(key: key);
   final Function toggleView;
-  Register({required this.toggleView});
+  const Register({super.key, required this.toggleView});
   @override
   State<Register> createState() => _RegisterState();
 }
@@ -23,106 +21,8 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    /*return  Scaffold(
-      appBar: AppBar(
-        title: Text('Register'),
-      ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Spacy',
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) => value == null || value.isEmpty ? 'Name cannot be empty' : null,
-                  onChanged: (value)  {
-                    setState(() {
-                      name = value;
-                    });
-                  }
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email cannot be empty';
-                    }
-                    return null;
-                  },
-                  onChanged: (value)  {
-                    setState(() {
-                      email = value;
-                    });
-                  }
-                ),
-                TextFormField(
-                  obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  validator: (value) => value == null || value.length < 6 ? 'Enter longer password' : null,
-                  onChanged: (value)  {
-                    setState(() {
-                      password = value;
-                    });
-                  }
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  child: Text('Register'),
-                  onPressed: () async {
-                    if (_formKey .currentState != null && _formKey .currentState!.validate()){
-                      dynamic result = await _auth.registerUserWithEmailAndPassword(email, password);
-                      if (result != null){
-                        print('user is succesfuly registered');
-                      }
-                      else {
-                        setState(() {
-                          error = 'regstration is not sucesfuly';
-                        });
-                      }
-                    }
-                    //_auth.regi
-                  },
-                ),
-                const SizedBox (
-                  height: 10,
-                ),
-                Text(error),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text('Already have an account?'),
-                ElevatedButton(
-                  child: Text('Log in'),
-                  onPressed: () async {
-                    widget.toggleView();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );;*/
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -136,7 +36,9 @@ class _RegisterState extends State<Register> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
-          child: Column(
+          child: Form(
+            key: _formKey,
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Stack(
@@ -151,7 +53,7 @@ class _RegisterState extends State<Register> {
                         Shadow(
                           color: Colors.black.withOpacity(0.5),
                           blurRadius: 8,
-                          offset: Offset(2, 2),
+                          offset: const Offset(2, 2),
                         ),
                       ],
                     ),
@@ -170,20 +72,20 @@ class _RegisterState extends State<Register> {
                   ),
                 ],
               ),
-              SizedBox(height: 50.0),
+              const SizedBox(height: 50.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
                     TextFormField(
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Email',
                         hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
@@ -199,9 +101,9 @@ class _RegisterState extends State<Register> {
                         });
                       },
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     TextFormField(
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Password',
@@ -209,7 +111,7 @@ class _RegisterState extends State<Register> {
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
@@ -221,9 +123,9 @@ class _RegisterState extends State<Register> {
                         });
                       },
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     TextFormField(
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Repeat password',
@@ -231,7 +133,7 @@ class _RegisterState extends State<Register> {
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
@@ -240,30 +142,25 @@ class _RegisterState extends State<Register> {
                           return 'Passwords do not match';
                         }
                         return null;
-                      },//val != password ? 'Passwords do not match' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          password = val;
-                        });
                       },
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Color(0xFF0F2027),
-                        padding: EdgeInsets.symmetric(horizontal: 50.0),
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF0F2027),
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
                       ),
-                      child: Text('Register', style: TextStyle(fontSize: 16.0)),
+                      child: const Text('Register', style: TextStyle(fontSize: 16.0)),
                       onPressed: () async {
                         if (_formKey.currentState != null && _formKey.currentState!.validate()){
                           dynamic result = await _auth.registerUserWithEmailAndPassword(email, password);
                           if (result != null){
-                            print('user is succesfuly registered');
+                            print('user is successfully registered');
                           }
                           else {
                             setState(() {
-                              error = 'regstration is not sucesfuly';
+                              error = 'Registration was not successful';
                             });
                           }
                         }
@@ -272,7 +169,7 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -284,7 +181,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'LogIn',
                       style: TextStyle(
                         color: Colors.white,
@@ -298,10 +195,16 @@ class _RegisterState extends State<Register> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20.0),
+              Text(
+                error,
+                style: const TextStyle(color: Colors.red, fontSize: 14.0),
+              ),
             ],
           ),
         ),
       ),
+    )
     );
   }
 }
