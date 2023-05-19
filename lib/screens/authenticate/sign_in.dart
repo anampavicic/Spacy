@@ -138,6 +138,7 @@ class _SignInState extends State<SignIn> {
                       child: const Text('Log In', style: TextStyle(fontSize: 16.0)),
                       onPressed: () async {
                         if (_formKey.currentState != null && _formKey.currentState!.validate()){
+
                           dynamic result = await _auth.signInWithEmailAndPassword(email, password);
                           if (result != null){
                             print('user is successfully registered');

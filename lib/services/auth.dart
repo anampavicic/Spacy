@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:spacy/services/database.dart';
 
 class AuthService {
 
@@ -10,6 +11,10 @@ class AuthService {
   Stream<User?> get user {
     return _auth.authStateChanges();
   }
+
+  String? getCurrentUser() {
+    return _auth.currentUser?.uid;
+}
 
   //sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
@@ -32,6 +37,7 @@ class AuthService {
       //_auth = FirebaseAuth.instance;
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
+      await UserService(userId: user?.uid).updateUserData();
       return user;
     }catch (e){
       print(e);

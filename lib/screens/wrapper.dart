@@ -25,8 +25,9 @@ class _WrapperState extends State<Wrapper> {
           );
         } else {
           if (snapshot.hasData) {
+            String? id = snapshot.data?.uid;
             // The user is logged in, so show the home screen
-            return Home();
+            return Home(userId: id.toString());
           } else {
             // The user is not logged in, so show the login screen
             return Authenticate();
