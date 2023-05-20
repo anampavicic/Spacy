@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spacy/screens/authenticate/authenticate.dart';
-import 'package:spacy/screens/home/home.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spacy/services/auth.dart';
+
+import 'home/home.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -37,7 +37,6 @@ class _WrapperState extends State<Wrapper> {
     );
   }
 }
-
 
 /*class Wrapper extends StatelessWidget {
   //const Wrapper({Key? key}) : super(key: key);

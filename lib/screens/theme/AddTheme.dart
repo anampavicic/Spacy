@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:spacy/models/user.dart';
-import 'package:spacy/screens/theme/add_card.dart';
+import 'package:spacy/screens/theme/congrast_screen.dart';
+import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
 
 import '../../services/auth.dart';
 import '../../services/theme.dart';
+import 'add_card.dart';
 
 class AddThemePage extends StatefulWidget {
   final String userId;
+
   const AddThemePage({super.key, required this.userId});
 
   @override
@@ -24,6 +26,9 @@ class _AddThemePageState extends State<AddThemePage> {
   final ThemeService _theme = ThemeService();
   final AuthService _authService = AuthService();
   final UserService _userService = UserService();
+  final CardService _cardService = CardService();
+
+  String themeId = "";
 
   @override
   void dispose() {
@@ -126,6 +131,19 @@ class _AddThemePageState extends State<AddThemePage> {
                               );
                             },
                           ),
+                          const SizedBox(height: 20.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'If deadline is not selected the them will never finish ',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -169,7 +187,33 @@ class _AddThemePageState extends State<AddThemePage> {
                         color: const Color(0xFF0F2027),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            final themeData = {
+                              'name': name,
+                              'creator': 'maybe not important',
+                              'deadline': deadline != null
+                                  ? Timestamp.fromDate(deadline!)
+                                  : null,
+                              'firstDayToRepeat':
+                                  Timestamp.fromDate(DateTime.now())
+                            };
+                            var themeIdNew = await _theme.addTheme(themeData);
+                            print('ThemeId: $themeIdNew');
+                            var currentUser = _authService.getCurrentUser();
+                            print('CurrentId: $currentUser');
+                            await _userService.addToUserThemes(
+                                currentUser.toString(), themeIdNew);
+                            print(themeData);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CongratsScreen(
+                                      themeId:
+                                          themeIdNew), // Navigate to AddThemePage
+                                ));
+                          }
+                        },
                         iconSize: 50.0,
                         icon: Icon(
                           Icons.check,
@@ -192,26 +236,44 @@ class _AddThemePageState extends State<AddThemePage> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
+                          if (themeId == "") {
+                            final themeData = {
+                              'name': name,
+                              'creator': 'maybe not important',
+                              'deadline': Timestamp.fromDate(deadline!),
+                              'firstDayToRepeat':
+                                  Timestamp.fromDate(DateTime.now())
+                            };
+                            var themeIdNew = await _theme.addTheme(themeData);
+                            setState(() {
+                              themeId = themeIdNew;
+                            });
+                            print('ThemeId: $themeId');
+                            print(themeId);
+                            var currentUser = _authService.getCurrentUser();
+                            await _userService.addToUserThemes(
+                                currentUser.toString(), themeId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddCardPage(
+                                    themeId: themeId,
+                                    cards: [],
+                                  ), // Navigate to AddThemePage
+                                ));
+                          } else {
+                            var cards =
+                                await _cardService.getCardsForTheme(themeId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddCardPage(
+                                    themeId: themeId,
+                                    cards: cards,
+                                  ), // Navigate to AddThemePage
+                                ));
+                          }
                           // Perform submission logic here
-                          final themeData = {
-                            'name': name,
-                            'creator': 'maybe not important',
-                            'deadline': Timestamp.fromDate(deadline!),
-                            'firstDayToRepeat':
-                                Timestamp.fromDate(DateTime.now())
-                          };
-                          var themeId = await _theme.addTheme(themeData);
-                          print('ThemeId: $themeId');
-                          print(themeId);
-                          var currentUser = _authService.getCurrentUser();
-                          await _userService.addToUserThemes(
-                              currentUser.toString(), themeId);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddCardPage(), // Navigate to AddThemePage
-                              ));
                         }
                       },
                       child: Text(

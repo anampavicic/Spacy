@@ -1,28 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:spacy/services/database.dart';
+import 'package:spacy/services/card.dart';
 
-import '../../services/auth.dart';
-import '../../services/theme.dart';
+import 'congrast_screen.dart';
 
 class AddCardPage extends StatefulWidget {
+  final String themeId;
+  final List<Map<String, dynamic>> cards;
+
+  const AddCardPage({super.key, required this.themeId, required this.cards});
+
   @override
   _AddCardPageState createState() => _AddCardPageState();
 }
 
 class _AddCardPageState extends State<AddCardPage> {
-  TextEditingController _nameController = TextEditingController();
+  TextEditingController _questionController = TextEditingController();
+  TextEditingController _answerController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final CardService _card = CardService();
+
   String question = "";
-  String description = "";
-  DateTime? deadline;
-  final ThemeService _theme = ThemeService();
-  final AuthService _authService = AuthService();
-  final UserService _userService = UserService();
+  String answer = "";
+  int card_index = 0;
+
+  void clearFields() {
+    _questionController.clear();
+    _answerController.clear();
+  }
+
+  void populateFields(String question, String answer) {
+    _questionController.text = question;
+    _answerController.text = answer;
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _questionController.dispose();
+    _answerController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.cards.isNotEmpty) {
+      var cardData = widget.cards[0];
+      _questionController.text = cardData['question'];
+      _answerController.text = cardData['answer'];
+    }
   }
 
   @override
@@ -72,6 +97,7 @@ class _AddCardPageState extends State<AddCardPage> {
                       child: Column(
                         children: [
                           TextFormField(
+                            controller: _questionController,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Question',
@@ -99,6 +125,7 @@ class _AddCardPageState extends State<AddCardPage> {
                           ),
                           const SizedBox(height: 20.0),
                           TextFormField(
+                            controller: _answerController,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Description',
@@ -116,12 +143,12 @@ class _AddCardPageState extends State<AddCardPage> {
                             keyboardType: TextInputType.multiline,
                             onChanged: (value) {
                               setState(() {
-                                description = value;
+                                answer = value;
                               });
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Description cannot be empty';
+                                return 'Answer cannot be empty';
                               }
                               return null;
                             },
@@ -153,7 +180,13 @@ class _AddCardPageState extends State<AddCardPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        if (card_index == 0) {
+                          Navigator.pop(context);
+                        } else {
+                          var card = widget.cards[card_index - 1];
+                          populateFields(card['question'], card['answer']);
+                          card_index--;
+                        }
                       },
                       child: Text(
                         "Back",
@@ -170,7 +203,45 @@ class _AddCardPageState extends State<AddCardPage> {
                         color: const Color(0xFF0F2027),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (card_index < widget.cards.length) {
+                              //update the current card
+                              var current_card = widget.cards[card_index];
+                              final cardData = {
+                                'question': question,
+                                'answer': answer,
+                                'themeId': widget.themeId
+                              };
+                              await _card.updateCard(
+                                  current_card['id'], cardData);
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CongratsScreen(
+                                        themeId: widget
+                                            .themeId), // Navigate to AddThemePage
+                                  ));
+                            } else {
+                              final cardData = {
+                                'question': question,
+                                'answer': answer,
+                                'themeId': widget.themeId
+                              };
+                              var cardId = await _card.addCard(cardData);
+                              widget.cards.add(cardData);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CongratsScreen(
+                                      themeId: widget.themeId,
+                                    ), // Navigate to AddThemePage
+                                  ));
+                            }
+                            card_index++;
+                          }
+                        },
                         iconSize: 50.0,
                         icon: Icon(
                           Icons.check,
@@ -191,7 +262,46 @@ class _AddCardPageState extends State<AddCardPage> {
                           borderRadius: BorderRadius.circular(0.0),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        print("befor on press");
+                        print(widget.cards);
+                        print(card_index);
+                        if (_formKey.currentState!.validate()) {
+                          if (card_index < widget.cards.length) {
+                            //update the current card
+                            var current_card = widget.cards[card_index];
+                            final cardData = {
+                              'question': question,
+                              'answer': answer,
+                              'themeId': widget.themeId
+                            };
+                            await _card.updateCard(
+                                current_card['id'], cardData);
+
+                            if (card_index + 1 < widget.cards.length) {
+                              //populate the next card if exists else clear
+                              var card = widget.cards[card_index + 1];
+                              populateFields(card['question'], card[answer]);
+                            } else {
+                              clearFields();
+                            }
+                          } else {
+                            final cardData = {
+                              'question': question,
+                              'answer': answer,
+                              'themeId': widget.themeId
+                            };
+                            var cardId = await _card.addCard(cardData);
+                            widget.cards.add(cardData);
+                            print(widget.cards);
+                            clearFields();
+                          }
+                          card_index++;
+                        }
+                        print("after on press");
+                        print(widget.cards);
+                        print(card_index);
+                      },
                       child: Text(
                         "Next",
                         style: TextStyle(color: Colors.white),
