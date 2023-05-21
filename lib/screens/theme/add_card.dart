@@ -4,6 +4,7 @@ import 'package:spacy/services/card.dart';
 
 import '../../services/user_card.dart';
 import '../utilities/background.dart';
+import '../utilities/bottom_bar.dart';
 import 'congrast_screen.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -38,7 +39,91 @@ class _AddCardPageState extends State<AddCardPage> {
     _answerController.text = answer;
   }
 
-  void backButtonInBottomBar() async {}
+  void backButtonInBottomBar() async {
+    if (this.card_index == 0) {
+      Navigator.pop(this.context);
+    } else {
+      var card = widget.cards[this.card_index - 1];
+      populateFields(card['question'], card['answer']);
+      this.card_index--;
+    }
+  }
+
+  void middleButtonInBottomBar() async {
+    if (this._formKey.currentState!.validate()) {
+      if (this.card_index < widget.cards.length) {
+        //update the current card
+        var current_card = widget.cards[this.card_index];
+        final cardData = {
+          'question': question,
+          'answer': answer,
+          'themeId': widget.themeId
+        };
+        await _card.updateCard(current_card['id'], cardData);
+
+        Navigator.push(
+            this.context,
+            MaterialPageRoute(
+              builder: (context) => CongratsScreen(
+                  themeId: widget.themeId), // Navigate to AddThemePage
+            ));
+      } else {
+        final cardData = {
+          'question': question,
+          'answer': answer,
+          'themeId': widget.themeId
+        };
+        var cardId = await _card.addCard(cardData);
+        widget.cards.add(cardData);
+        await _userCardService.addUserCard(
+            widget.themeId, _authService.getCurrentUser().toString(), cardId);
+        Navigator.push(
+            this.context,
+            MaterialPageRoute(
+              builder: (context) => CongratsScreen(
+                themeId: widget.themeId,
+              ), // Navigate to AddThemePage
+            ));
+      }
+      card_index++;
+    }
+  }
+
+  void nextButtomInBottomBar() async {
+    if (_formKey.currentState!.validate()) {
+      if (card_index < widget.cards.length) {
+        //update the current card
+        var current_card = widget.cards[card_index];
+        final cardData = {
+          'question': question,
+          'answer': answer,
+          'themeId': widget.themeId
+        };
+        await _card.updateCard(current_card['id'], cardData);
+
+        if (card_index + 1 < widget.cards.length) {
+          //populate the next card if exists else clear
+          var card = widget.cards[card_index + 1];
+          populateFields(card['question'], card[answer]);
+        } else {
+          clearFields();
+        }
+      } else {
+        final cardData = {
+          'question': question,
+          'answer': answer,
+          'themeId': widget.themeId
+        };
+        var cardId = await _card.addCard(cardData);
+        await _userCardService.addUserCard(
+            widget.themeId, _authService.getCurrentUser().toString(), cardId);
+        widget.cards.add(cardData);
+        print(widget.cards);
+        clearFields();
+      }
+      card_index++;
+    }
+  }
 
   @override
   void dispose() {
@@ -158,163 +243,13 @@ class _AddCardPageState extends State<AddCardPage> {
                 ),
               ),
             ),
-            bottomNavigationBar: BottomAppBar(
-              color: Colors.transparent,
-              elevation: 12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 168,
-                    height: 40,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        primary: Colors.transparent,
-                        onPrimary: const Color(0xFF0F2027),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (card_index == 0) {
-                          Navigator.pop(context);
-                        } else {
-                          var card = widget.cards[card_index - 1];
-                          populateFields(card['question'], card['answer']);
-                          card_index--;
-                        }
-                      },
-                      child: Text(
-                        "Back",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 74,
-                    height: 70,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF0F2027),
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (card_index < widget.cards.length) {
-                              //update the current card
-                              var current_card = widget.cards[card_index];
-                              final cardData = {
-                                'question': question,
-                                'answer': answer,
-                                'themeId': widget.themeId
-                              };
-                              await _card.updateCard(
-                                  current_card['id'], cardData);
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CongratsScreen(
-                                        themeId: widget
-                                            .themeId), // Navigate to AddThemePage
-                                  ));
-                            } else {
-                              final cardData = {
-                                'question': question,
-                                'answer': answer,
-                                'themeId': widget.themeId
-                              };
-                              var cardId = await _card.addCard(cardData);
-                              widget.cards.add(cardData);
-                              await _userCardService.addUserCard(
-                                  widget.themeId,
-                                  _authService.getCurrentUser().toString(),
-                                  cardId);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CongratsScreen(
-                                      themeId: widget.themeId,
-                                    ), // Navigate to AddThemePage
-                                  ));
-                            }
-                            card_index++;
-                          }
-                        },
-                        iconSize: 50.0,
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 168,
-                    height: 40,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        primary: Colors.transparent,
-                        onPrimary: const Color(0xFF0F2027),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      onPressed: () async {
-                        print("befor on press");
-                        print(widget.cards);
-                        print(card_index);
-                        if (_formKey.currentState!.validate()) {
-                          if (card_index < widget.cards.length) {
-                            //update the current card
-                            var current_card = widget.cards[card_index];
-                            final cardData = {
-                              'question': question,
-                              'answer': answer,
-                              'themeId': widget.themeId
-                            };
-                            await _card.updateCard(
-                                current_card['id'], cardData);
-
-                            if (card_index + 1 < widget.cards.length) {
-                              //populate the next card if exists else clear
-                              var card = widget.cards[card_index + 1];
-                              populateFields(card['question'], card[answer]);
-                            } else {
-                              clearFields();
-                            }
-                          } else {
-                            final cardData = {
-                              'question': question,
-                              'answer': answer,
-                              'themeId': widget.themeId
-                            };
-                            var cardId = await _card.addCard(cardData);
-                            await _userCardService.addUserCard(
-                                widget.themeId,
-                                _authService.getCurrentUser().toString(),
-                                cardId);
-                            widget.cards.add(cardData);
-                            print(widget.cards);
-                            clearFields();
-                          }
-                          card_index++;
-                        }
-                        print("after on press");
-                        print(widget.cards);
-                        print(card_index);
-                      },
-                      child: Text(
-                        "Next",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            bottomNavigationBar: CustomBottomAppBar(
+              leftButtonName: 'Back',
+              middleButtonIcon: Icon(Icons.check),
+              rightButtonName: 'Next',
+              leftButtonPressed: backButtonInBottomBar,
+              middleButtonPressed: middleButtonInBottomBar,
+              rightButtonPressed: nextButtomInBottomBar,
             )));
   }
 }
