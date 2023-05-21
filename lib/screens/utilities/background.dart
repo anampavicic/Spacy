@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class GradientBoxDecoration {
   static const BoxDecoration gradientBoxDecoration = BoxDecoration(
-    gradient: LinearGradient(
+    /*gradient: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
@@ -10,6 +10,10 @@ class GradientBoxDecoration {
         Color(0xFF203A43),
         Color(0xFF2C5364),
       ],
+    ),*/
+    image: DecorationImage(
+      image: AssetImage('assets/dark.jpg'),
+      fit: BoxFit.cover,
     ),
   );
 }
