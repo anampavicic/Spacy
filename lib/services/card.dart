@@ -48,7 +48,7 @@ class CardService {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('cards')
-        .where('theme', isEqualTo: themeId)
+        .where('themeId', isEqualTo: themeId)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -57,6 +57,40 @@ class CardService {
       cards.add(card);
     });
 
+    return cards;
+  }
+
+  Future<List<Map<String, dynamic>>> getCardsForToday(
+      List<String> cardIds, String themeId) async {
+    final List<Map<String, dynamic>> cards = [];
+
+    final batchSize = 10; // Maximum number of IDs per batch
+    final totalBatches = (cardIds.length / batchSize).ceil();
+
+    for (var i = 0; i < totalBatches; i++) {
+      final start = i * batchSize;
+      final end = (i + 1) * batchSize;
+
+      final List<String> batchIds =
+          cardIds.sublist(start, end > cardIds.length ? cardIds.length : end);
+
+      final QuerySnapshot snapshot = await firestore
+          .collection('cards')
+          .where(FieldPath.documentId, whereIn: batchIds)
+          .get();
+
+      print(snapshot.docs.toList());
+      final List<Map<String, dynamic>> batchThemes = snapshot.docs
+          .map((DocumentSnapshot doc) => {
+                'question': doc['question'],
+                'answer': doc['answer'],
+                'id': doc.id,
+                // Include other attributes here
+              })
+          .toList();
+
+      cards.addAll(batchThemes);
+    }
     return cards;
   }
 }

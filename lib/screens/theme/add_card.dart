@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:spacy/services/auth.dart';
 import 'package:spacy/services/card.dart';
 
+import '../../services/user_card.dart';
+import '../utilities/background.dart';
 import 'congrast_screen.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -18,6 +21,8 @@ class _AddCardPageState extends State<AddCardPage> {
   TextEditingController _answerController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final CardService _card = CardService();
+  final UserCard _userCardService = UserCard();
+  final AuthService _authService = AuthService();
 
   String question = "";
   String answer = "";
@@ -32,6 +37,8 @@ class _AddCardPageState extends State<AddCardPage> {
     _questionController.text = question;
     _answerController.text = answer;
   }
+
+  void backButtonInBottomBar() async {}
 
   @override
   void dispose() {
@@ -53,17 +60,7 @@ class _AddCardPageState extends State<AddCardPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0F2027),
-              Color(0xFF203A43),
-              Color(0xFF2C5364),
-            ],
-          ),
-        ),
+        decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Center(
@@ -231,6 +228,10 @@ class _AddCardPageState extends State<AddCardPage> {
                               };
                               var cardId = await _card.addCard(cardData);
                               widget.cards.add(cardData);
+                              await _userCardService.addUserCard(
+                                  widget.themeId,
+                                  _authService.getCurrentUser().toString(),
+                                  cardId);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -292,6 +293,10 @@ class _AddCardPageState extends State<AddCardPage> {
                               'themeId': widget.themeId
                             };
                             var cardId = await _card.addCard(cardData);
+                            await _userCardService.addUserCard(
+                                widget.themeId,
+                                _authService.getCurrentUser().toString(),
+                                cardId);
                             widget.cards.add(cardData);
                             print(widget.cards);
                             clearFields();

@@ -5,6 +5,7 @@ import 'package:spacy/services/database.dart';
 import 'package:spacy/services/theme.dart';
 
 import '../theme/AddTheme.dart';
+import '../utilities/background.dart';
 
 /*class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -76,16 +77,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF0F2027),
-                Color(0xFF203A43),
-                Color(0xFF2C5364),
-              ]),
-        ),
+        decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(

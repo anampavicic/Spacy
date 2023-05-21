@@ -7,6 +7,7 @@ import 'package:spacy/services/database.dart';
 
 import '../../services/auth.dart';
 import '../../services/theme.dart';
+import '../utilities/background.dart';
 import 'add_card.dart';
 
 class AddThemePage extends StatefulWidget {
@@ -39,17 +40,7 @@ class _AddThemePageState extends State<AddThemePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0F2027),
-              Color(0xFF203A43),
-              Color(0xFF2C5364),
-            ],
-          ),
-        ),
+        decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Center(
@@ -191,7 +182,6 @@ class _AddThemePageState extends State<AddThemePage> {
                           if (_formKey.currentState!.validate()) {
                             final themeData = {
                               'name': name,
-                              'creator': 'maybe not important',
                               'deadline': deadline != null
                                   ? Timestamp.fromDate(deadline!)
                                   : null,
@@ -236,11 +226,13 @@ class _AddThemePageState extends State<AddThemePage> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
+                          print('next');
                           if (themeId == "") {
                             final themeData = {
                               'name': name,
-                              'creator': 'maybe not important',
-                              'deadline': Timestamp.fromDate(deadline!),
+                              'deadline': deadline != null
+                                  ? Timestamp.fromDate(deadline!)
+                                  : null,
                               'firstDayToRepeat':
                                   Timestamp.fromDate(DateTime.now())
                             };

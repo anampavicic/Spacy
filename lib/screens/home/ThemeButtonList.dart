@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:spacy/services/auth.dart';
+import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
+import 'package:spacy/services/user_card.dart';
 
 import '../cards/card_page.dart';
 
@@ -15,6 +18,10 @@ class ThemeButtonList extends StatefulWidget {
 class _ThemeButtonListState extends State<ThemeButtonList> {
   TextEditingController _textFieldController = TextEditingController();
   bool _showPopup = false;
+
+  final UserCard userCardService = UserCard();
+  final CardService cardService = CardService();
+  final AuthService authService = AuthService();
 
   @override
   void dispose() {
@@ -55,11 +62,31 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                       color: Colors.white,
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        print('we have cliked on theme button');
+                        String? userId = authService.getCurrentUser();
+                        print('userId');
+                        print(userId);
+                        List<Map<String, dynamic>> userCards =
+                            await userCardService.getCardsForThemeAndUserToday(
+                                userId.toString(), theme['id']);
+                        print(userCards);
+                        List<String> cardIds = [];
+                        for (var i = 0; i < userCards.length; i++) {
+                          cardIds.add(userCards[i]['cardId']);
+                        }
+                        print(cardIds);
+                        List<Map<String, dynamic>> cards = await cardService
+                            .getCardsForToday(cardIds, theme['id']);
+                        print(cards);
+                        //dohvati sve cardove
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CardPage(cards: []),
+                            builder: (context) => CardPage(
+                              cards: cards,
+                              userCards: userCards,
+                            ),
                           ),
                         );
                         // Perform actions when the button is pressed
