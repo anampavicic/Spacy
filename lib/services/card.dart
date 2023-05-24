@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spacy/models/card.dart';
 
 class CardService {
   final firestore = FirebaseFirestore.instance;
@@ -24,6 +25,18 @@ class CardService {
     }
 
     return {};
+  }
+
+  Future<FlashCard?> getCardByIdCard(String cardId) async {
+    final DocumentSnapshot snapshot = await cardsCollection.doc(cardId).get();
+
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      return FlashCard(
+          uid: cardId, question: data!['question'], answer: data['answer']);
+    }
+
+    return null;
   }
 
   Future<List<String>> getCardsIdForTheme(String themeId) async {

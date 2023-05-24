@@ -65,7 +65,7 @@ class _AddThemePageState extends State<AddThemePage> {
       final themeData = {
         'name': name,
         'deadline': deadline != null ? Timestamp.fromDate(deadline!) : null,
-        'firstDayToRepeat': Timestamp.fromDate(DateTime.now())
+        'deleted': false
       };
       var themeIdNew = await _theme.addTheme(themeData);
       print('ThemeId: $themeIdNew');

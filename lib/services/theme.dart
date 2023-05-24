@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/theme.dart';
+
 class ThemeService {
   final String? themeId;
 
@@ -14,6 +16,19 @@ class ThemeService {
     print('we arw in the funsiton');
     print(id);
     return id;
+  }
+
+  Future<SpacyTheme?> getThemeById(String themeId) async {
+    final DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('theme').doc(themeId).get();
+
+    if (snapshot.exists) {
+      final data = snapshot.data() as Map<String, dynamic>?;
+      SpacyTheme theme = SpacyTheme(
+          uid: themeId, deadline: data!['deadline'], name: data['name']);
+      return theme;
+    }
+    return null;
   }
 
   Future<List<Map<String, dynamic>>> getThemesByIdsForActive2(

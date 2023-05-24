@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spacy/services/theme.dart';
+import 'package:spacy/services/user_card.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
@@ -8,31 +9,6 @@ import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
 import 'ThemeButtonList.dart';
 
-/*class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
-
-  final AuthService _auth = AuthService();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Spacy'),
-      ),
-      body: Container(
-        child: Column(
-          children: <Widget> [
-            ElevatedButton(
-              onPressed: () => _auth.signOut(),
-              child: Text(
-                  'sign out'
-              ),
-            ),
-          ]
-        )
-      )
-    );
-  }
-}*/
 class Home extends StatefulWidget {
   final String userId;
 
@@ -48,6 +24,7 @@ class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
   final UserService _user = UserService();
   final ThemeService _theme = ThemeService();
+  final UserCard _userCard = UserCard();
   @override
   int _selectedIndex = 0;
   List<String> _words = ['Today', 'Active', 'All'];
@@ -58,6 +35,7 @@ class _HomeState extends State<Home> {
     final List<String> userThemes =
         await _user.getUserThemeById(widget.userId.toString());
     if (_selectedIndex == 0) {
+      var themes = await _userCard.getCardsForToday(widget.userId);
       return _theme.getThemesByIdsForToday(userThemes);
     }
     if (_selectedIndex == 1) {

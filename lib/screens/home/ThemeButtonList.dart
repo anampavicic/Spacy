@@ -110,10 +110,10 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                           PopupMenuButton<String>(
                             itemBuilder: (BuildContext context) =>
                                 <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
+                              /*PopupMenuItem<String>(
                                 value: 'edit',
                                 child: Text('Edit'),
-                              ),
+                              ),*/
                               PopupMenuItem<String>(
                                 value: 'share',
                                 child: Text('Share with Friends'),
@@ -125,9 +125,9 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                             ],
                             onSelected: (String value) {
                               switch (value) {
-                                case 'edit':
+                                /*case 'edit':
                                   // Perform edit action
-                                  break;
+                                  break;*/
                                 case 'share':
                                   _showSharePopup(
                                     theme['id'],
