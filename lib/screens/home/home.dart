@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:spacy/screens/home/ThemeButtonList.dart';
-import 'package:spacy/services/auth.dart';
-import 'package:spacy/services/database.dart';
 import 'package:spacy/services/theme.dart';
 
+import '../../services/auth.dart';
+import '../../services/database.dart';
 import '../theme/AddTheme.dart';
 import '../utilities/background.dart';
+import '../utilities/convex_app_bar.dart';
+import 'ThemeButtonList.dart';
 
 /*class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -74,140 +75,88 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void leftButton() async {
+    List<String> themes =
+        await _user.getUserThemeById(widget.userId.toString());
+    var names = await _theme.getThemesByIdsForToday(themes);
+  }
+
+  void middleButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AddThemePage(
+                userId: widget.userId,
+              )), // Navigate to AddThemePage
+    );
+  }
+
+  void rightButton() {
+    _auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _words.map((word) {
-                  int index = _words.indexOf(word);
-                  bool isSelected = _selectedIndex == index;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.transparent,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                word.toUpperCase(),
-                                style: TextStyle(
-                                  color:
-                                      isSelected ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _words.map((word) {
+                    int index = _words.indexOf(word);
+                    bool isSelected = _selectedIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
+                                child: Text(
+                                  word.toUpperCase(),
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
-              )),
-          body: ThemeButtonList(
-            getThemes: getThemes,
-          ),
-          bottomNavigationBar: BottomAppBar(
-            color: Colors.transparent,
-            elevation: 12,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 168,
-                  height: 40,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      primary: Colors.transparent,
-                      onPrimary: const Color(0xFF0F2027),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0.0),
-                      ),
-                    ),
-                    onPressed: () async {
-                      /*var id = await ThemeService().addTheme();
-                    setState(() {
-                        Id = "id";
-                    });
-                    print(id);
-                    print(widget.userId);*/
-                      List<String> themes = await _user
-                          .getUserThemeById(widget.userId.toString());
-                      var names = await _theme.getThemesByIdsForToday(themes);
-                    },
-                    child: Text(
-                      'Theme',
-                      style: TextStyle(color: const Color(0xFF0F2027)),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 74,
-                  height: 70,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF0F2027),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddThemePage(
-                                    userId: widget.userId,
-                                  )), // Navigate to AddThemePage
-                        );
-                      },
-                      iconSize: 50.0,
-                      icon: Icon(Icons.add, color: Colors.white),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 168,
-                  height: 40,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      primary: Colors.transparent,
-                      onPrimary: const Color(0xFF0F2027),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0.0),
-                      ),
-                    ),
-                    onPressed: () => _auth.signOut(),
-                    child: Text(
-                      "Ana",
-                      style: TextStyle(color: const Color(0xFF0F2027)),
-                    ),
-                  ),
-                ),
-              ],
+                    );
+                  }).toList(),
+                )),
+            body: ThemeButtonList(
+              getThemes: getThemes,
             ),
-          ),
-        ));
+            bottomNavigationBar: CustomConvexBottomAppBar(
+              rightIcon: Icons.article,
+              middleIcon: Icons.add,
+              leftIcon: Icons.bar_chart,
+              rightButtonPressed: rightButton,
+              middleButtonPressed: middleButton,
+              leftButtonPressed: leftButton,
+            )));
   }
 }

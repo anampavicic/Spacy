@@ -4,7 +4,7 @@ import 'package:spacy/services/card.dart';
 
 import '../../services/user_card.dart';
 import '../utilities/background.dart';
-import '../utilities/bottom_bar.dart';
+import '../utilities/convex_app_bar.dart';
 import 'congrast_screen.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -243,10 +243,10 @@ class _AddCardPageState extends State<AddCardPage> {
                 ),
               ),
             ),
-            bottomNavigationBar: CustomBottomAppBar(
-              leftButtonName: 'Back',
-              middleButtonIcon: Icon(Icons.check),
-              rightButtonName: 'Next',
+            bottomNavigationBar: CustomConvexBottomAppBar(
+              leftIcon: Icons.arrow_back_ios_new,
+              middleIcon: Icons.check,
+              rightIcon: Icons.arrow_forward_ios,
               leftButtonPressed: backButtonInBottomBar,
               middleButtonPressed: middleButtonInBottomBar,
               rightButtonPressed: nextButtomInBottomBar,

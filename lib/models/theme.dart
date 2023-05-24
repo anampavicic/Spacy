@@ -6,13 +6,13 @@ class SpacyTheme {
   final String uid;
   final DateTime deadline;
   final String name;
-  final List<FlashCard> cards;
-  final List<UserCard> userCards;
+  List<FlashCard>? cards;
+  List<UserCard>? userCards;
 
   SpacyTheme(
       {required this.uid,
       required this.deadline,
       required this.name,
-      required this.cards,
-      required this.userCards});
+      this.cards,
+      this.userCards});
 }

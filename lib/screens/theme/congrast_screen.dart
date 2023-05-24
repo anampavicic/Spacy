@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:spacy/services/database.dart';
 
+import '../utilities/background.dart';
+import '../utilities/convex_app_bar_one_button.dart';
+
 class CongratsScreen extends StatefulWidget {
   @override
   final String themeId;
@@ -20,20 +23,14 @@ class _CongratsScreenState extends State<CongratsScreen> {
     _textFieldController.clear();
   }
 
+  void middleButton() {
+    Navigator.popUntil(context, (route) => route.isFirst);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF0F2027),
-            Color(0xFF203A43),
-            Color(0xFF2C5364),
-          ],
-        ),
-      ),
+      decoration: GradientBoxDecoration.gradientBoxDecoration,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
@@ -149,34 +146,9 @@ class _CongratsScreenState extends State<CongratsScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          elevation: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 74,
-                height: 70,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF0F2027),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                    },
-                    iconSize: 50.0,
-                    icon: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        bottomNavigationBar: CustomConvexBottomAppBarOneButton(
+          middleIcon: Icons.check,
+          middleButtonPressed: middleButton,
         ),
       ),
     );

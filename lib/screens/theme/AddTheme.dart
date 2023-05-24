@@ -8,6 +8,7 @@ import 'package:spacy/services/database.dart';
 import '../../services/auth.dart';
 import '../../services/theme.dart';
 import '../utilities/background.dart';
+import '../utilities/convex_app_bar.dart';
 import 'add_card.dart';
 
 class AddThemePage extends StatefulWidget {
@@ -35,6 +36,89 @@ class _AddThemePageState extends State<AddThemePage> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  void leftButton() async {
+    if (_formKey.currentState!.validate()) {
+      final themeData = {
+        'name': name,
+        'deadline': deadline != null ? Timestamp.fromDate(deadline!) : null,
+        'firstDayToRepeat': Timestamp.fromDate(DateTime.now())
+      };
+      var themeIdNew = await _theme.addTheme(themeData);
+      print('ThemeId: $themeIdNew');
+      var currentUser = _authService.getCurrentUser();
+      print('CurrentId: $currentUser');
+      await _userService.addToUserThemes(currentUser.toString(), themeIdNew);
+      print(themeData);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CongratsScreen(themeId: themeIdNew), // Navigate to AddThemePage
+          ));
+    }
+  }
+
+  void middleButton() async {
+    if (_formKey.currentState!.validate()) {
+      final themeData = {
+        'name': name,
+        'deadline': deadline != null ? Timestamp.fromDate(deadline!) : null,
+        'firstDayToRepeat': Timestamp.fromDate(DateTime.now())
+      };
+      var themeIdNew = await _theme.addTheme(themeData);
+      print('ThemeId: $themeIdNew');
+      var currentUser = _authService.getCurrentUser();
+      print('CurrentId: $currentUser');
+      await _userService.addToUserThemes(currentUser.toString(), themeIdNew);
+      print(themeData);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CongratsScreen(themeId: themeIdNew), // Navigate to AddThemePage
+          ));
+    }
+  }
+
+  void rightButton() async {
+    if (_formKey.currentState!.validate()) {
+      print('next');
+      if (themeId == "") {
+        final themeData = {
+          'name': name,
+          'deadline': deadline != null ? Timestamp.fromDate(deadline!) : null,
+          'firstDayToRepeat': Timestamp.fromDate(DateTime.now())
+        };
+        var themeIdNew = await _theme.addTheme(themeData);
+        setState(() {
+          themeId = themeIdNew;
+        });
+        print('ThemeId: $themeId');
+        print(themeId);
+        var currentUser = _authService.getCurrentUser();
+        await _userService.addToUserThemes(currentUser.toString(), themeId);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCardPage(
+                themeId: themeId,
+                cards: [],
+              ), // Navigate to AddThemePage
+            ));
+      } else {
+        var cards = await _cardService.getCardsForTheme(themeId);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCardPage(
+                themeId: themeId,
+                cards: cards,
+              ), // Navigate to AddThemePage
+            ));
+      }
+    }
   }
 
   @override
@@ -142,140 +226,13 @@ class _AddThemePageState extends State<AddThemePage> {
                 ),
               ),
             ),
-            bottomNavigationBar: BottomAppBar(
-              color: Colors.transparent,
-              elevation: 12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 168,
-                    height: 40,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        primary: Colors.transparent,
-                        onPrimary: const Color(0xFF0F2027),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "Back",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 74,
-                    height: 70,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF0F2027),
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            final themeData = {
-                              'name': name,
-                              'deadline': deadline != null
-                                  ? Timestamp.fromDate(deadline!)
-                                  : null,
-                              'firstDayToRepeat':
-                                  Timestamp.fromDate(DateTime.now())
-                            };
-                            var themeIdNew = await _theme.addTheme(themeData);
-                            print('ThemeId: $themeIdNew');
-                            var currentUser = _authService.getCurrentUser();
-                            print('CurrentId: $currentUser');
-                            await _userService.addToUserThemes(
-                                currentUser.toString(), themeIdNew);
-                            print(themeData);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CongratsScreen(
-                                      themeId:
-                                          themeIdNew), // Navigate to AddThemePage
-                                ));
-                          }
-                        },
-                        iconSize: 50.0,
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 168,
-                    height: 40,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        primary: Colors.transparent,
-                        onPrimary: const Color(0xFF0F2027),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          print('next');
-                          if (themeId == "") {
-                            final themeData = {
-                              'name': name,
-                              'deadline': deadline != null
-                                  ? Timestamp.fromDate(deadline!)
-                                  : null,
-                              'firstDayToRepeat':
-                                  Timestamp.fromDate(DateTime.now())
-                            };
-                            var themeIdNew = await _theme.addTheme(themeData);
-                            setState(() {
-                              themeId = themeIdNew;
-                            });
-                            print('ThemeId: $themeId');
-                            print(themeId);
-                            var currentUser = _authService.getCurrentUser();
-                            await _userService.addToUserThemes(
-                                currentUser.toString(), themeId);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddCardPage(
-                                    themeId: themeId,
-                                    cards: [],
-                                  ), // Navigate to AddThemePage
-                                ));
-                          } else {
-                            var cards =
-                                await _cardService.getCardsForTheme(themeId);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddCardPage(
-                                    themeId: themeId,
-                                    cards: cards,
-                                  ), // Navigate to AddThemePage
-                                ));
-                          }
-                          // Perform submission logic here
-                        }
-                      },
-                      child: Text(
-                        "Next",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            bottomNavigationBar: CustomConvexBottomAppBar(
+              leftIcon: Icons.arrow_back_ios_new,
+              middleIcon: Icons.check,
+              rightIcon: Icons.arrow_forward_ios,
+              leftButtonPressed: leftButton,
+              middleButtonPressed: middleButton,
+              rightButtonPressed: rightButton,
             )));
   }
 }

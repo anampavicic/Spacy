@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:spacy/screens/utilities/convex_app_bar_one_button.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../utilities/background.dart';
@@ -45,6 +46,10 @@ class _CardPageState extends State<CardPage> {
     setState(() {
       this._showAnswer = true;
     });
+  }
+
+  void middleButton() {
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   void yesButtonInBottomBar() async {
@@ -163,7 +168,10 @@ class _CardPageState extends State<CardPage> {
                     middleButtonPressed: middleButtonInBottomBar,
                     rightButtonPressed: yesButtonInBottomBar,
                   )
-                : null,
+                : CustomConvexBottomAppBarOneButton(
+                    middleIcon: Icons.check,
+                    middleButtonPressed: middleButton,
+                  ),
       ),
     );
   }
