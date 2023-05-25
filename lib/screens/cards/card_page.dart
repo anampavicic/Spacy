@@ -4,7 +4,7 @@ import 'package:spacy/screens/utilities/convex_app_bar_one_button.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../utilities/background.dart';
-import '../utilities/bottom_bar.dart';
+import '../utilities/convex_app_bar.dart';
 
 class CardPage extends StatefulWidget {
   final List<Map<String, dynamic>> cards;
@@ -147,11 +147,27 @@ class _CardPageState extends State<CardPage> {
                   ),
                 ),
               if (widget.cards.isEmpty || _currentIndex >= widget.cards.length)
-                Text(
-                  'Congratulations! You have gone through all cards.',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Congratulations!\n',
+                        style: TextStyle(
+                          fontSize: 35.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      WidgetSpan(
+                        child: SizedBox(
+                            height: 30.0), // Add extra space using SizedBox
+                      ),
+                      TextSpan(text: 'You have gone through all cards.'),
+                    ],
                   ),
                 ),
               SizedBox(height: 16.0),
@@ -160,10 +176,10 @@ class _CardPageState extends State<CardPage> {
         ),
         bottomNavigationBar:
             widget.cards.isNotEmpty && _currentIndex < widget.cards.length
-                ? CustomBottomAppBar(
-                    leftButtonName: 'No',
-                    middleButtonIcon: Icon(Icons.question_mark_rounded),
-                    rightButtonName: 'Yes',
+                ? CustomConvexBottomAppBar(
+                    leftIcon: Icons.thumb_down,
+                    middleIcon: Icons.question_mark_rounded,
+                    rightIcon: Icons.thumb_up,
                     leftButtonPressed: noButtomInBottomBar,
                     middleButtonPressed: middleButtonInBottomBar,
                     rightButtonPressed: yesButtonInBottomBar,
