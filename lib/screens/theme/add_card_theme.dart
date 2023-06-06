@@ -12,6 +12,7 @@ class AddCardThemePage extends StatefulWidget {
   final Function setCards;
   final Function addThemeWithCards;
   final Function toggleView;
+  final Function getCards;
 
   const AddCardThemePage({
     super.key,
@@ -19,6 +20,7 @@ class AddCardThemePage extends StatefulWidget {
     required this.setCards,
     required this.addThemeWithCards,
     required this.toggleView,
+    required this.getCards,
   });
 
   @override
@@ -50,8 +52,13 @@ class _AddCardThemePageState extends State<AddCardThemePage> {
 
   void backButtonInBottomBar() async {
     if (this.card_index == 0) {
-      widget.setCards(cards);
-      widget.toggleView();
+      if (this._formKey.currentState!.validate()) {
+        FlashCard card = FlashCard(question: question, answer: answer);
+        cards.add(card);
+        widget.setCards(cards);
+        print(cards.length);
+        widget.toggleView();
+      }
     } else {
       var card = cards[this.card_index - 1];
       populateFields(card.question, card.answer);
@@ -113,6 +120,7 @@ class _AddCardThemePageState extends State<AddCardThemePage> {
   @override
   void initState() {
     super.initState();
+    cards = widget.getCards();
     if (cards.isNotEmpty) {
       var cardData = cards[0];
       _questionController.text = cardData.question;

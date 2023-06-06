@@ -12,12 +12,16 @@ class AddThemeDetailsPage extends StatefulWidget {
   final Function toggleView;
   final Function setThemeDetails;
   final Function addThemeWithCards;
+  final Function getThemeName;
+  final Function getCards;
 
   const AddThemeDetailsPage(
       {super.key,
       required this.toggleView,
       required this.setThemeDetails,
-      required this.addThemeWithCards});
+      required this.addThemeWithCards,
+      required this.getThemeName,
+      required this.getCards});
 
   @override
   _AddThemeDetailsPageState createState() => _AddThemeDetailsPageState();
@@ -52,8 +56,23 @@ class _AddThemeDetailsPageState extends State<AddThemeDetailsPage> {
 
   void rightButton() async {
     if (_formKey.currentState!.validate()) {
+      widget.setThemeDetails(name, deadline);
+      print("right buttton");
+      print(name);
+      setState(() {
+        name = name;
+      });
       widget.toggleView();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("initial state ofadd theme ");
+    name = widget.getThemeName();
+
+    _nameController.text = name;
   }
 
   @override
@@ -93,6 +112,7 @@ class _AddThemeDetailsPageState extends State<AddThemeDetailsPage> {
                       child: Column(
                         children: [
                           TextFormField(
+                            controller: _nameController,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Name',

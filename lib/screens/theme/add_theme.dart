@@ -23,7 +23,7 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
   final UserService _user = UserService();
   bool isAddCard = false;
 
-  String? themeName;
+  String themeName = "";
   DateTime? deadline;
   List<FlashCard> cards = [];
   int currentIndex = 0;
@@ -32,13 +32,17 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
     setState(() {
       isAddCard = !isAddCard;
     });
+    print("toggle view theme name");
+    print(themeName);
   }
 
-  void setThemeDetails(String themeName, DateTime deadline) {
+  void setThemeDetails(String name, DateTime? deadlineNew) {
+    themeName = name;
     setState(() {
-      themeName = themeName;
-      deadline = deadline;
+      themeName = name;
+      deadline = deadlineNew;
     });
+    print("theme detaails have been set");
   }
 
   List<FlashCard> getCards() {
@@ -51,6 +55,10 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
 
   int getCurrentIndex() {
     return currentIndex;
+  }
+
+  String getThemeName() {
+    return themeName;
   }
 
   void addThemeWithCards() async {
@@ -78,6 +86,8 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
           toggleView: toggleView,
           setThemeDetails: setThemeDetails,
           addThemeWithCards: addThemeWithCards,
+          getThemeName: getThemeName,
+          getCards: getCards,
         ),
       );
     } else {
@@ -87,6 +97,7 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
           setCards: setCards,
           addThemeWithCards: addThemeWithCards,
           toggleView: toggleView,
+          getCards: getCards,
         ),
       );
     }
