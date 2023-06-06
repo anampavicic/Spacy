@@ -1,5 +1,5 @@
 class UserCardData {
-  final String uid;
+  String uid;
   final String cardId;
   final String themeId;
   final String userId;

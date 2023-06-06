@@ -4,7 +4,7 @@ import 'package:spacy/services/user_card.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
-import '../theme/AddTheme.dart';
+import '../theme/add_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
 import 'ThemeButtonList.dart';
@@ -63,9 +63,8 @@ class _HomeState extends State<Home> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AddThemePage(
-                userId: widget.userId,
-              )), // Navigate to AddThemePage
+          builder: (context) =>
+              AddThemeToggleView()), // Navigate to AddThemePage
     );
   }
 

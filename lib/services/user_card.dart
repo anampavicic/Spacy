@@ -116,9 +116,14 @@ class UserCard {
     List<SpacyTheme> themes = [];
 
     for (var themeId in sortedByThemeMap.keys) {
-      var theme = await _themeService.getThemeById(themeId);
+      //var theme = await _themeService.getThemeById(themeId);
+      SpacyTheme theme = SpacyTheme(
+          deadline: DateTime.now(),
+          name: 'ana',
+          nextFibValue: 1,
+          nextDate: DateTime.now());
       var deadline = theme?.deadline;
-      if (deadline != null && deadline.toDate().isBefore(DateTime.now())) {
+      if (deadline != null /*&& deadline.toDate().isBefore(DateTime.now())*/) {
         continue;
       }
       List<FlashCard> cards = [];

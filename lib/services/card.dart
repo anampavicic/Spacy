@@ -6,6 +6,15 @@ class CardService {
   final CollectionReference cardsCollection =
       FirebaseFirestore.instance.collection('cards');
 
+  Future addCardNew(FlashCard card) async {
+    final cardData = {
+      "question": card.question,
+      "answer": card.answer,
+      "themeId": card.themeId
+    };
+    await cardsCollection.add(cardData);
+  }
+
   Future<String> addCard(cardData) async {
     var id = await cardsCollection.add(cardData).then((value) => value.id);
     return id;
@@ -32,8 +41,9 @@ class CardService {
 
     if (snapshot.exists) {
       var data = snapshot.data() as Map<String, dynamic>;
-      return FlashCard(
-          uid: cardId, question: data!['question'], answer: data['answer']);
+      var card = FlashCard(question: data!['question'], answer: data['answer']);
+      card.uid = cardId;
+      return card;
     }
 
     return null;
@@ -53,6 +63,23 @@ class CardService {
     });
 
     return cardIds;
+  }
+
+  Future<List<FlashCard>> getFlashCardsIdForTheme(String themeId) async {
+    List<FlashCard> cards = [];
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('cards')
+        .where('theme', isEqualTo: themeId)
+        .get();
+
+    querySnapshot.docs.forEach((doc) {
+      cards.add(FlashCard(
+          uid: doc.id, question: doc['question'], answer: doc['answer']));
+    });
+
+    return cards;
   }
 
   Future<List<Map<String, dynamic>>> getCardsForTheme(String themeId) async {

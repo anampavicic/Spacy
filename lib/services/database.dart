@@ -18,7 +18,6 @@ class UserService {
       final List<String> themes = List<String>.from(
           (userThemeSnapshot.data() as Map<String, dynamic>)['themes'] ?? []);
       themes.add(themeId);
-      print(themeId);
 
       await userThemeRef.update({'themes': themes});
     } else {

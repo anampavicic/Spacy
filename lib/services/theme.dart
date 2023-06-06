@@ -1,15 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spacy/services/card.dart';
+import 'package:spacy/services/database.dart';
 
 import '../models/theme.dart';
+import '../models/user_card.dart';
 
 class ThemeService {
-  final String? themeId;
-
-  ThemeService({this.themeId});
+  final UserService _userService = UserService();
+  final CardService _cardService = CardService();
 
   final firestore = FirebaseFirestore.instance;
   final CollectionReference themeCollection =
       FirebaseFirestore.instance.collection('theme');
+
+  Future<String> addThemeNew(String name, DateTime? deadline, int nextFibValue,
+      DateTime nextDate) async {
+    final themeData = {
+      "name": name,
+      "deadline": deadline == null ? null : Timestamp.fromDate(deadline),
+      "nextFibValue": nextFibValue,
+      "nextDate": Timestamp.fromDate(nextDate)
+    };
+    var id = await themeCollection.add(themeData).then((value) => value.id);
+    return id;
+  }
 
   Future<String> addTheme(themeData) async {
     var id = await themeCollection.add(themeData).then((value) => value.id);
@@ -24,9 +38,6 @@ class ThemeService {
 
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>?;
-      SpacyTheme theme = SpacyTheme(
-          uid: themeId, deadline: data!['deadline'], name: data['name']);
-      return theme;
     }
     return null;
   }
@@ -173,6 +184,28 @@ class ThemeService {
       themes.addAll(batchThemes);
     }
 
+    return themes;
+  }
+
+  Future<List<SpacyTheme>> getThemesForActive(String userId) async {
+    List<SpacyTheme> themes = [];
+    List<String> themeIds = await _userService.getUserThemeById(userId);
+    final DateTime now = DateTime.now();
+
+    for (var themeId in themeIds) {
+      var theme = await getThemeById(themeId);
+      /*bool? archive = theme?.archive == null ? false : theme?.archive;
+      if (archive == true) {
+        continue;
+      }*/
+      var deadline = theme?.deadline;
+      if (deadline != null && deadline.isBefore(DateTime.now())) {
+        continue;
+      }
+      var cards = await _cardService.getFlashCardsIdForTheme(themeId);
+      List<UserCardData> userCards = [];
+      for (var card in cards) {}
+    }
     return themes;
   }
 }
