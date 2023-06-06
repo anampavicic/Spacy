@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spacy/models/theme.dart';
 import 'package:spacy/services/theme.dart';
 import 'package:spacy/services/user_card.dart';
 
@@ -30,19 +31,16 @@ class _HomeState extends State<Home> {
   List<String> _words = ['Today', 'Active', 'All'];
   String Id = "Ana"; //delete this when you get the chance
 
-  Future<List<Map<String, dynamic>>> getThemes() async {
-    //fetch
-    final List<String> userThemes =
-        await _user.getUserThemeById(widget.userId.toString());
+  Future<List<SpacyTheme>> getThemes() async {
+    var userId = _auth.getCurrentUser().toString();
     if (_selectedIndex == 0) {
-      var themes = await _userCard.getCardsForToday(widget.userId);
-      return _theme.getThemesByIdsForToday(userThemes);
+      return _theme.getThemeForTodayNew(userId);
     }
     if (_selectedIndex == 1) {
-      return _theme.getThemesByIdsForActive(userThemes);
+      return _theme.getThemeForActiveNew(userId);
     }
     if (_selectedIndex == 2) {
-      return _theme.getThemesByIdsForAll(userThemes);
+      return _theme.getThemeForAllNew(userId);
     }
     return [];
   }

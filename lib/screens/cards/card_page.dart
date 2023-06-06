@@ -1,22 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:spacy/models/card.dart';
+import 'package:spacy/models/theme.dart';
 import 'package:spacy/screens/utilities/convex_app_bar_one_button.dart';
+import 'package:spacy/services/theme.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
 
 class CardPage extends StatefulWidget {
-  final List<Map<String, dynamic>> cards;
-  final List<Map<String, dynamic>> userCards;
+  final List<FlashCard> cards;
+  final String userId;
+  final SpacyTheme theme;
 
-  CardPage({required this.cards, required this.userCards});
+  CardPage({required this.cards, required this.userId, required this.theme});
 
   @override
   _CardPageState createState() => _CardPageState();
 }
 
 class _CardPageState extends State<CardPage> {
+  final ThemeService _themeService = ThemeService();
   TextEditingController _questionController = TextEditingController();
   TextEditingController _answerController = TextEditingController();
   bool _showAnswer = false;
@@ -25,9 +30,8 @@ class _CardPageState extends State<CardPage> {
   final UserCard _userCard = UserCard();
 
   void noButtomInBottomBar() async {
-    var userCard = widget.userCards[this._currentIndex];
-    userCard['completed'] = false;
-    await _userCard.updateUserCard(userCard);
+    await _userCard.addUserCard(widget.cards[_currentIndex].themeId.toString(),
+        widget.userId, widget.cards[_currentIndex].uid.toString(), false);
 
     if (this._currentIndex == widget.cards.length - 1) {
       this._currentIndex = 0;
@@ -38,8 +42,8 @@ class _CardPageState extends State<CardPage> {
       this._showAnswer = false;
     });
 
-    _questionController.text = widget.cards[_currentIndex]['question'];
-    _answerController.text = widget.cards[_currentIndex]['answer'];
+    _questionController.text = widget.cards[_currentIndex].question;
+    _answerController.text = widget.cards[_currentIndex].answer;
   }
 
   void middleButtonInBottomBar() {
@@ -54,30 +58,15 @@ class _CardPageState extends State<CardPage> {
 
   void yesButtonInBottomBar() async {
     //update the user_card
-    var userCard = widget.userCards[this._currentIndex];
-    var wasCompeted = userCard['completed'];
-    userCard['completed'] = true;
-    await _userCard.updateUserCard(userCard);
+    await _userCard.addUserCard(widget.theme.uid.toString(), widget.userId,
+        widget.cards[_currentIndex].uid.toString(), true);
 
-    //add a new user-card data
-    int nextValue = wasCompeted == null
-        ? fibonacciNext(userCard['value'])
-        : userCard['value'];
-    final userCardNew = {
-      'time_to_pass':
-          Timestamp.fromDate(DateTime.now().add(Duration(days: nextValue))),
-      'value': nextValue,
-      'completed': null,
-      'themeId': userCard['themeId'],
-      'userId': userCard['userId'],
-      'cardId': userCard['cardId'],
-    };
     //remove from the list that is iterate
     widget.cards.removeAt(_currentIndex);
-    widget.userCards.removeAt(_currentIndex);
 
-    //updathe the current card
-    await _userCard.addUserCardNew(userCardNew);
+    if (widget.cards.length == 0) {
+      updateTheme();
+    }
 
     if (this._currentIndex == widget.cards.length - 1) {
       this._currentIndex = 0;
@@ -88,17 +77,27 @@ class _CardPageState extends State<CardPage> {
       this._showAnswer = false;
     });
 
-    _questionController.text = widget.cards[_currentIndex]['question'];
-    _answerController.text = widget.cards[_currentIndex]['answer'];
+    _questionController.text = widget.cards[_currentIndex].question;
+    _answerController.text = widget.cards[_currentIndex].question;
+  }
+
+  void updateTheme() async {
+    var nextFibb = fibonacciNext(widget.theme.nextFibValue);
+    final data = {
+      "nextDate":
+          Timestamp.fromDate(DateTime.now().add(Duration(days: nextFibb))),
+      "nextFibValue": nextFibb
+    };
+    await _themeService.updateTheme(data, widget.theme.uid.toString());
   }
 
   @override
   void initState() {
     super.initState();
     _questionController.text =
-        widget.cards.length > 0 ? widget.cards[_currentIndex]['question'] : "";
+        widget.cards.length > 0 ? widget.cards[_currentIndex].question : "";
     _answerController.text =
-        widget.cards.length > 0 ? widget.cards[_currentIndex]['answer'] : "";
+        widget.cards.length > 0 ? widget.cards[_currentIndex].answer : "";
   }
 
   @override
@@ -194,18 +193,20 @@ class _CardPageState extends State<CardPage> {
 }
 
 int fibonacciNext(int number) {
+  if (number >= 55) {
+    return 55;
+  }
   if (number <= 0) {
     return 0;
   } else {
-    int prev = 0;
-    int current = 1;
+    int prev = 1;
+    int current = 2;
 
     for (int i = 2; i <= number; i++) {
       int next = prev + current;
       prev = current;
       current = next;
     }
-
     return current;
   }
 }

@@ -4,11 +4,11 @@ import 'card.dart';
 
 class SpacyTheme {
   String? uid;
-  final DateTime? deadline;
-  final String name;
-  final int nextFibValue;
-  final DateTime nextDate;
-  List<FlashCard>? cards;
+  DateTime? deadline;
+  String name;
+  int nextFibValue;
+  DateTime nextDate;
+  List<FlashCard> cards;
   List<UserCardData>? userCards;
 
   SpacyTheme(
@@ -16,6 +16,6 @@ class SpacyTheme {
       required this.name,
       required this.nextFibValue,
       required this.nextDate,
-      this.cards,
-      this.userCards});
+      this.userCards})
+      : cards = [];
 }

@@ -13,15 +13,17 @@ class UserCard {
   final CollectionReference carduserCollection =
       FirebaseFirestore.instance.collection('user-card');
 
-  Future addUserCard(String themeId, String userId, String cardId) async {
-    print('we are adding user card');
+  //using
+  Future<void> addUserCard(
+      String themeId, String userId, String cardId, bool completed) async {
+    print("aaddddddddd");
+    print(themeId);
     final cardUserData = {
-      'time_to_pass': Timestamp.fromDate(DateTime.now()),
-      'value': 1,
-      'completed': null,
+      'completed': completed,
       'themeId': themeId,
       'userId': userId,
       'cardId': cardId,
+      'dataCompleted': Timestamp.fromDate(DateTime.now())
     };
     var id = await carduserCollection.doc().set(cardUserData);
   }

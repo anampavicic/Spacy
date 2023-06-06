@@ -75,8 +75,8 @@ class _AddCardPageState extends State<AddCardPage> {
         };
         var cardId = await _card.addCard(cardData);
         widget.cards.add(cardData);
-        await _userCardService.addUserCard(
-            widget.themeId, _authService.getCurrentUser().toString(), cardId);
+        await _userCardService.addUserCard(widget.themeId,
+            _authService.getCurrentUser().toString(), cardId, false);
         Navigator.push(
             this.context,
             MaterialPageRoute(
@@ -115,8 +115,8 @@ class _AddCardPageState extends State<AddCardPage> {
           'themeId': widget.themeId
         };
         var cardId = await _card.addCard(cardData);
-        await _userCardService.addUserCard(
-            widget.themeId, _authService.getCurrentUser().toString(), cardId);
+        await _userCardService.addUserCard(widget.themeId,
+            _authService.getCurrentUser().toString(), cardId, false);
         widget.cards.add(cardData);
         print(widget.cards);
         clearFields();

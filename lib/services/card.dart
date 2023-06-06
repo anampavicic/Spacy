@@ -55,7 +55,7 @@ class CardService {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('cards')
-        .where('theme', isEqualTo: themeId)
+        .where('themeId', isEqualTo: themeId)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -65,20 +65,19 @@ class CardService {
     return cardIds;
   }
 
+  //using
   Future<List<FlashCard>> getFlashCardsIdForTheme(String themeId) async {
     List<FlashCard> cards = [];
-
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('cards')
-        .where('theme', isEqualTo: themeId)
+        .where('themeId', isEqualTo: themeId)
         .get();
 
     querySnapshot.docs.forEach((doc) {
       cards.add(FlashCard(
           uid: doc.id, question: doc['question'], answer: doc['answer']));
     });
-
     return cards;
   }
 

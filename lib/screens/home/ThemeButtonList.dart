@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spacy/models/theme.dart';
 import 'package:spacy/services/auth.dart';
 import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
@@ -7,7 +8,7 @@ import 'package:spacy/services/user_card.dart';
 import '../cards/card_page.dart';
 
 class ThemeButtonList extends StatefulWidget {
-  final Future<List<Map<String, dynamic>>> Function() getThemes;
+  final Future<List<SpacyTheme>> Function() getThemes;
 
   ThemeButtonList({required this.getThemes});
 
@@ -31,7 +32,7 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Map<String, dynamic>>>(
+    return FutureBuilder<List<SpacyTheme>>(
       future: widget.getThemes(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,30 +64,13 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                     ),
                     child: ElevatedButton(
                       onPressed: () async {
-                        print('we have cliked on theme button');
-                        String? userId = authService.getCurrentUser();
-                        print('userId');
-                        print(userId);
-                        List<Map<String, dynamic>> userCards =
-                            await userCardService.getCardsForThemeAndUserToday(
-                                userId.toString(), theme['id']);
-                        print(userCards);
-                        List<String> cardIds = [];
-                        for (var i = 0; i < userCards.length; i++) {
-                          cardIds.add(userCards[i]['cardId']);
-                        }
-                        print(cardIds);
-                        List<Map<String, dynamic>> cards = await cardService
-                            .getCardsForToday(cardIds, theme['id']);
-                        print(cards);
-                        //dohvati sve cardove
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => CardPage(
-                              cards: cards,
-                              userCards: userCards,
-                            ),
+                                cards: theme.cards,
+                                userId: authService.getCurrentUser().toString(),
+                                theme: theme),
                           ),
                         );
                         // Perform actions when the button is pressed
@@ -104,7 +88,7 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            theme['name'],
+                            theme.name,
                             style: TextStyle(fontSize: 14.0),
                           ),
                           PopupMenuButton<String>(
@@ -130,7 +114,7 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                                   break;*/
                                 case 'share':
                                   _showSharePopup(
-                                    theme['id'],
+                                    theme.uid.toString(),
                                   );
                                   break;
                                 case 'archive':

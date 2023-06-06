@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spacy/models/card.dart';
 import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
 
@@ -25,10 +26,91 @@ class ThemeService {
     return id;
   }
 
+  Future<void> updateTheme(themeData, String themeId) async {
+    final DocumentReference cardRef = await themeCollection.doc(themeId);
+
+    await cardRef.update(themeData);
+  }
+
+  //using
+  Future<List<SpacyTheme>> getThemeForTodayNew(String userId) async {
+    final DateTime now = DateTime.now();
+    List<SpacyTheme> themes = [];
+    List<String> themeIds = await _userService.getUserThemeById(userId);
+    for (var themeId in themeIds) {
+      SpacyTheme? theme = await getThemeById(themeId);
+      //tema ne smije biti null
+      if (theme == null) {
+        continue;
+      } else {
+        var deadline = theme.deadline;
+        if (deadline != null && deadline.isBefore(now)) {
+          continue;
+        } else {
+          if (theme.nextDate.isBefore(now)) {
+            theme.uid = themeId;
+            List<FlashCard> cards =
+                await _cardService.getFlashCardsIdForTheme(themeId);
+            theme.cards = cards;
+            themes.add(theme);
+          }
+        }
+      }
+    }
+    return themes;
+  }
+
+  //using
+  Future<List<SpacyTheme>> getThemeForActiveNew(String userId) async {
+    final DateTime now = DateTime.now();
+    List<SpacyTheme> themes = [];
+    List<String> themeIds = await _userService.getUserThemeById(userId);
+    for (var themeId in themeIds) {
+      SpacyTheme? theme = await getThemeById(themeId);
+      //tema ne smije biti null
+      if (theme == null) {
+        continue;
+      } else {
+        var deadline = theme.deadline;
+        if (deadline != null && deadline.isBefore(now)) {
+          continue;
+        } else {
+          theme.uid = themeId;
+          List<FlashCard> cards =
+              await _cardService.getFlashCardsIdForTheme(themeId);
+          print("active cards lenght");
+          print(cards.length);
+          theme.cards = cards;
+          themes.add(theme);
+        }
+      }
+    }
+    return themes;
+  }
+
+  ///GetThemesForAll
+  Future<List<SpacyTheme>> getThemeForAllNew(String userId) async {
+    final DateTime now = DateTime.now();
+    List<SpacyTheme> themes = [];
+    List<String> themeIds = await _userService.getUserThemeById(userId);
+    for (var themeId in themeIds) {
+      SpacyTheme? theme = await getThemeById(themeId);
+      //tema ne smije biti null
+      if (theme == null) {
+        continue;
+      } else {
+        theme.uid = themeId;
+        List<FlashCard> cards =
+            await _cardService.getFlashCardsIdForTheme(themeId);
+        theme.cards = cards;
+        themes.add(theme);
+      }
+    }
+    return themes;
+  }
+
   Future<String> addTheme(themeData) async {
     var id = await themeCollection.add(themeData).then((value) => value.id);
-    print('we arw in the funsiton');
-    print(id);
     return id;
   }
 
@@ -38,6 +120,14 @@ class ThemeService {
 
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>?;
+      DateTime? deadline = data!['deadline'] == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(data!['deadline']);
+      return SpacyTheme(
+          deadline: deadline,
+          name: data['name'],
+          nextFibValue: data['nextFibValue'],
+          nextDate: data['nextDate'].toDate());
     }
     return null;
   }
