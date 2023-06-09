@@ -3,6 +3,7 @@ import 'package:spacy/models/theme.dart';
 import 'package:spacy/services/auth.dart';
 import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
+import 'package:spacy/services/theme.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../cards/card_page.dart';
@@ -23,6 +24,7 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
   final UserCard userCardService = UserCard();
   final CardService cardService = CardService();
   final AuthService authService = AuthService();
+  final ThemeService themeService = ThemeService();
 
   @override
   void dispose() {
@@ -94,10 +96,10 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                           PopupMenuButton<String>(
                             itemBuilder: (BuildContext context) =>
                                 <PopupMenuEntry<String>>[
-                              /*PopupMenuItem<String>(
+                              PopupMenuItem<String>(
                                 value: 'edit',
                                 child: Text('Edit'),
-                              ),*/
+                              ),
                               PopupMenuItem<String>(
                                 value: 'share',
                                 child: Text('Share with Friends'),
@@ -109,15 +111,17 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                             ],
                             onSelected: (String value) {
                               switch (value) {
-                                /*case 'edit':
+                                case 'edit':
                                   // Perform edit action
-                                  break;*/
+                                  break;
                                 case 'share':
                                   _showSharePopup(
                                     theme.uid.toString(),
                                   );
                                   break;
                                 case 'archive':
+                                  _showDeleteConfirmation(theme.uid.toString());
+                                  break;
                                   // Perform archive action
                                   break;
                               }
@@ -186,6 +190,7 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF001125),
                         primary: Theme.of(context).backgroundColor,
                         // Use the background color as the button color
                         onPrimary: Colors.white,
@@ -205,6 +210,35 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                   ],
                 ),
               )),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(String documentId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Warning'),
+          content: Text(
+              'If you delete the theme, you will lose all the statistics connected to it.'),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                // Call the deleteDocument function with the document ID
+                themeService.deleteDocument(documentId);
+                Navigator.pop(context); // Close the dialog
+              },
+            ),
+          ],
         );
       },
     );

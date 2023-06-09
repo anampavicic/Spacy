@@ -126,8 +126,6 @@ class _CongratsScreenState extends State<CongratsScreen> {
                                 await _userService.addToUserThemes(
                                     userId, widget.themeId);
                                 clearFields();
-                                // Add your logic to handle the "Add" button press here
-                                // For example, you can print "bla" here
                               }
                             },
                             child: Text(

@@ -109,6 +109,17 @@ class ThemeService {
     return themes;
   }
 
+  ///delete theme
+  Future<void> deleteDocument(String documentId) async {
+    try {
+      await themeCollection.doc(documentId).delete();
+      //dellete all the cards connected to it
+      //delete the theme from this user
+    } catch (e) {
+      print('Error deleting document: $e');
+    }
+  }
+
   Future<String> addTheme(themeData) async {
     var id = await themeCollection.add(themeData).then((value) => value.id);
     return id;
