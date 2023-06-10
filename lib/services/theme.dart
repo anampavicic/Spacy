@@ -26,9 +26,9 @@ class ThemeService {
     return id;
   }
 
+  ///update theme
   Future<void> updateTheme(themeData, String themeId) async {
     final DocumentReference cardRef = await themeCollection.doc(themeId);
-
     await cardRef.update(themeData);
   }
 

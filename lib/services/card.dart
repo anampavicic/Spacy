@@ -20,9 +20,9 @@ class CardService {
     return id;
   }
 
+  ///update card
   Future<void> updateCard(String cardId, cardData) async {
     final DocumentReference cardRef = await cardsCollection.doc(cardId);
-
     await cardRef.update(cardData);
   }
 

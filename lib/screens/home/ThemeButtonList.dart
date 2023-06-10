@@ -7,6 +7,7 @@ import 'package:spacy/services/theme.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../cards/card_page.dart';
+import '../edit theme/edit_theme.dart';
 
 class ThemeButtonList extends StatefulWidget {
   final Future<List<SpacyTheme>> Function() getThemes;
@@ -113,6 +114,14 @@ class _ThemeButtonListState extends State<ThemeButtonList> {
                               switch (value) {
                                 case 'edit':
                                   // Perform edit action
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditThemeToggleView(
+                                              theme: theme,
+                                            )), // Navigate to AddThemePage
+                                  );
                                   break;
                                 case 'share':
                                   _showSharePopup(
