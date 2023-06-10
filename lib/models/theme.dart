@@ -8,6 +8,7 @@ class SpacyTheme {
   String name;
   int nextFibValue;
   DateTime nextDate;
+  double? percentOfSolvedCardsForUser;
   List<FlashCard> cards;
   List<UserCardData>? userCards;
 
