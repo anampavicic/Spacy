@@ -22,16 +22,4 @@ class UserCard {
     };
     var id = await carduserCollection.doc().set(cardUserData);
   }
-
-  Future addUserCardNew(userCardData) async {
-    await carduserCollection.doc().set(userCardData);
-  }
-
-  Future<void> updateUserCard(cardData) async {
-    final data = {'completed': cardData['completed']};
-    final DocumentReference cardRef =
-        await carduserCollection.doc(cardData['id']);
-
-    await cardRef.update(data);
-  }
 }
