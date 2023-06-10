@@ -1,71 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:spacy/models/theme.dart';
-import 'package:spacy/services/theme.dart';
-import 'package:spacy/services/user_card.dart';
 
-import '../../services/auth.dart';
-import '../../services/database.dart';
-import '../theme/add_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
-import 'ThemeButtonList.dart';
 
-class Home extends StatefulWidget {
+class HomeStatistic extends StatefulWidget {
   final String userId;
   final Function toggleView;
 
-  const Home({super.key, required this.userId, required this.toggleView});
-
-  //const Home({Key? key}) : super(key: key);
+  const HomeStatistic(
+      {super.key, required this.userId, required this.toggleView});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeStatistic> createState() => _HomeStatisticState();
 }
 
-class _HomeState extends State<Home> {
-  final AuthService _auth = AuthService();
-  final UserService _user = UserService();
-  final ThemeService _theme = ThemeService();
-  final UserCard _userCard = UserCard();
+class _HomeStatisticState extends State<HomeStatistic> {
   @override
   int _selectedIndex = 0;
-  List<String> _words = ['Today', 'Active', 'All'];
-  String Id = "Ana"; //delete this when you get the chance
-
-  Future<List<SpacyTheme>> getThemes() async {
-    var userId = _auth.getCurrentUser().toString();
-    if (_selectedIndex == 0) {
-      return _theme.getThemeForTodayNew(userId);
-    }
-    if (_selectedIndex == 1) {
-      return _theme.getThemeForActiveNew(userId);
-    }
-    if (_selectedIndex == 2) {
-      return _theme.getThemeForAllNew(userId);
-    }
-    return [];
-  }
-
-  void _onCategorySelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+  List<String> _words = ['Overview', 'You&Friends'];
   void leftButton() async {
-    List<String> themes =
-        await _user.getUserThemeById(widget.userId.toString());
-    var names = await _theme.getThemesByIdsForToday(themes);
+    widget.toggleView();
   }
 
-  void middleButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              AddThemeToggleView()), // Navigate to AddThemePage
-    );
-  }
+  void middleButton() {}
 
   void rightButton() {
     widget.toggleView();
@@ -123,9 +80,9 @@ class _HomeState extends State<Home> {
                     );
                   }).toList(),
                 )),
-            body: ThemeButtonList(
+            /*body: ThemeButtonList(
               getThemes: getThemes,
-            ),
+            ),*/
             bottomNavigationBar: CustomConvexBottomAppBar(
               rightIcon: Icons.article,
               middleIcon: Icons.add,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:spacy/screens/authenticate/authenticate.dart';
 import 'package:spacy/services/auth.dart';
 
-import 'home/home.dart';
+import 'home/home_wrapper.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -27,7 +27,7 @@ class _WrapperState extends State<Wrapper> {
           if (snapshot.hasData) {
             String? id = snapshot.data?.uid;
             // The user is logged in, so show the home screen
-            return Home(userId: id.toString());
+            return HomeWrapper(userId: id.toString());
           } else {
             // The user is not logged in, so show the login screen
             return Authenticate();
