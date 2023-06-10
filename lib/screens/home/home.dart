@@ -52,11 +52,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void leftButton() async {
-    List<String> themes =
-        await _user.getUserThemeById(widget.userId.toString());
-    var names = await _theme.getThemesByIdsForToday(themes);
-  }
+  void leftButton() async {}
 
   void middleButton() {
     Navigator.push(
