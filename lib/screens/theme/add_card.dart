@@ -22,7 +22,7 @@ class _AddCardPageState extends State<AddCardPage> {
   TextEditingController _answerController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final CardService _card = CardService();
-  final UserCard _userCardService = UserCard();
+  final UserCardService _userCardService = UserCardService();
   final AuthService _authService = AuthService();
 
   String question = "";

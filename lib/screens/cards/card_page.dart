@@ -27,7 +27,7 @@ class _CardPageState extends State<CardPage> {
   bool _showAnswer = false;
   int _currentIndex = 0;
 
-  final UserCard _userCard = UserCard();
+  final UserCardService _userCard = UserCardService();
 
   void noButtomInBottomBar() async {
     await _userCard.addUserCard(widget.cards[_currentIndex].themeId.toString(),

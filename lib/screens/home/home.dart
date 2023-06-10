@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
   final UserService _user = UserService();
   final ThemeService _theme = ThemeService();
-  final UserCard _userCard = UserCard();
+  final UserCardService _userCard = UserCardService();
   @override
   int _selectedIndex = 0;
   List<String> _words = ['Today', 'Active', 'All'];

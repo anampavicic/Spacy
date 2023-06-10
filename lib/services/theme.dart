@@ -117,6 +117,38 @@ class ThemeService {
     }
   }
 
+  ///Get theme for statistic
+  /*Future<List<SpacyTheme>> getThemesForStatistic(String userId) async {
+    final DateTime now = DateTime.now();
+    List<SpacyTheme> themes = [];
+    List<String> themeIds = await _userService.getUserThemeById(userId);
+    for (var themeId in themeIds) {
+      SpacyTheme? theme = await getThemeById(themeId);
+      //tema ne smije biti null
+      if (theme == null) {
+        continue;
+      }
+      //set theme ttributes
+      theme.uid = themeId;
+      List<FlashCard> cards =
+          await _cardService.getFlashCardsIdForTheme(themeId);
+
+      List<UserCardData> userCards =
+          await _userCardService.getUserCardsForThemeAndUser(themeId, userId);
+      int succesfulyCompleted = 0;
+      for (var userCard in userCards) {
+        if (userCard.completed) {
+          succesfulyCompleted++;
+        }
+      }
+      theme.percentOfSolvedCardsForUser =
+          succesfulyCompleted / userCards.length;
+      theme.cards = cards;
+      themes.add(theme);
+    }
+    return themes;
+  }*/
+
   Future<String> addTheme(themeData) async {
     var id = await themeCollection.add(themeData).then((value) => value.id);
     return id;

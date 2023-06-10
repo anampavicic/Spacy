@@ -4,7 +4,7 @@ import 'package:spacy/services/theme.dart';
 
 import '../models/user_card.dart';
 
-class UserCard {
+class UserCardService {
   final ThemeService _themeService = ThemeService();
   final CardService _cardService = CardService();
   final firestore = FirebaseFirestore.instance;
