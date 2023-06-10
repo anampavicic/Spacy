@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spacy/screens/home/home.dart';
-import 'package:spacy/screens/home/home_statistic.dart';
+
+import 'home_statistic.dart';
 
 class HomeWrapper extends StatefulWidget {
   final String userId;

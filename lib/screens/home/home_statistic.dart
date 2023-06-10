@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/add_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
 
@@ -17,16 +18,21 @@ class HomeStatistic extends StatefulWidget {
 class _HomeStatisticState extends State<HomeStatistic> {
   @override
   int _selectedIndex = 0;
-  List<String> _words = ['Overview', 'You&Friends'];
+  List<String> _words = ['Best', 'Worst'];
   void leftButton() async {
     widget.toggleView();
   }
 
-  void middleButton() {}
-
-  void rightButton() {
-    widget.toggleView();
+  void middleButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              AddThemeToggleView()), // Navigate to AddThemePage
+    );
   }
+
+  void rightButton() {}
 
   @override
   Widget build(BuildContext context) {
