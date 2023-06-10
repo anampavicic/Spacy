@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:spacy/screens/home/statistic_theme_button_list.dart';
 
+import '../../models/theme.dart';
+import '../../services/theme.dart';
 import '../theme/add_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
@@ -16,6 +19,21 @@ class HomeStatistic extends StatefulWidget {
 }
 
 class _HomeStatisticState extends State<HomeStatistic> {
+  final ThemeService _theme = ThemeService();
+
+  Future<List<SpacyTheme>> getThemes() async {
+    var themes = await _theme.getThemesForStatistic(widget.userId);
+    if (_selectedIndex == 0) {
+      themes.sort((a, b) => a.percentOfSolvedCardsForUser!
+          .compareTo(b.percentOfSolvedCardsForUser as num));
+    }
+    if (_selectedIndex == 1) {
+      themes.sort((a, b) => b.percentOfSolvedCardsForUser!
+          .compareTo(a.percentOfSolvedCardsForUser as num));
+    }
+    return themes;
+  }
+
   @override
   int _selectedIndex = 0;
   List<String> _words = ['Best', 'Worst'];
@@ -86,9 +104,9 @@ class _HomeStatisticState extends State<HomeStatistic> {
                     );
                   }).toList(),
                 )),
-            /*body: ThemeButtonList(
+            body: StatisticThemeButtonList(
               getThemes: getThemes,
-            ),*/
+            ),
             bottomNavigationBar: CustomConvexBottomAppBar(
               rightIcon: Icons.article,
               middleIcon: Icons.add,

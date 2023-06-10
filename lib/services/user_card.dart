@@ -1,12 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:spacy/services/card.dart';
-import 'package:spacy/services/theme.dart';
 
 import '../models/user_card.dart';
 
 class UserCardService {
-  final ThemeService _themeService = ThemeService();
-  final CardService _cardService = CardService();
   final firestore = FirebaseFirestore.instance;
   final CollectionReference carduserCollection =
       FirebaseFirestore.instance.collection('user-card');

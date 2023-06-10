@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spacy/models/card.dart';
+import 'package:spacy/models/user_card.dart';
 import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
+import 'package:spacy/services/user_card.dart';
 
 import '../models/theme.dart';
 
 class ThemeService {
   final UserService _userService = UserService();
   final CardService _cardService = CardService();
+  final UserCardService _userCardService = UserCardService();
 
   final firestore = FirebaseFirestore.instance;
   final CollectionReference themeCollection =
@@ -118,7 +121,7 @@ class ThemeService {
   }
 
   ///Get theme for statistic
-  /*Future<List<SpacyTheme>> getThemesForStatistic(String userId) async {
+  Future<List<SpacyTheme>> getThemesForStatistic(String userId) async {
     final DateTime now = DateTime.now();
     List<SpacyTheme> themes = [];
     List<String> themeIds = await _userService.getUserThemeById(userId);
@@ -147,7 +150,7 @@ class ThemeService {
       themes.add(theme);
     }
     return themes;
-  }*/
+  }
 
   Future<String> addTheme(themeData) async {
     var id = await themeCollection.add(themeData).then((value) => value.id);
