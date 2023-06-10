@@ -78,8 +78,6 @@ class ThemeService {
           theme.uid = themeId;
           List<FlashCard> cards =
               await _cardService.getFlashCardsIdForTheme(themeId);
-          print("active cards lenght");
-          print(cards.length);
           theme.cards = cards;
           themes.add(theme);
         }
@@ -131,9 +129,8 @@ class ThemeService {
 
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>?;
-      DateTime? deadline = data!['deadline'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(data!['deadline']);
+      DateTime? deadline =
+          data!['deadline'] == null ? null : data!['deadline'].toDate();
       return SpacyTheme(
           deadline: deadline,
           name: data['name'],
