@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -178,7 +180,16 @@ class _StatisticPageState extends State<StatisticPage> {
   }
 
   Widget _buildLineChart(List<ChartData> d) {
-    var data = d.toSet();
+    Random random = Random();
+    var data = [
+      ChartData(0, 0),
+      ChartData(1, random.nextDouble() * 100),
+      ChartData(2, random.nextDouble() * 100),
+      ChartData(3, random.nextDouble() * 100),
+      ChartData(4, random.nextDouble() * 100),
+      ChartData(5, random.nextDouble() * 100),
+      ChartData(6, random.nextDouble() * 100)
+    ];
     return Container(
       color: Colors.white.withOpacity(0.8),
       height: 150.0,
@@ -190,7 +201,7 @@ class _StatisticPageState extends State<StatisticPage> {
                 charts.ColorUtil.fromDartColor(Color(0xFF001125)),
             domainFn: (ChartData data, _) => data.x,
             measureFn: (ChartData data, _) => data.y,
-            data: d,
+            data: data,
           ),
         ],
         animate: true,
