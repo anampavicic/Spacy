@@ -148,6 +148,7 @@ class _AddCardPageState extends State<AddCardPage> {
         decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
             backgroundColor: Colors.transparent,
+            resizeToAvoidBottomInset: false,
             body: Center(
               child: Form(
                 key: _formKey,

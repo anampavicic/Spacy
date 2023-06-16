@@ -116,7 +116,7 @@ class _StatisticPageState extends State<StatisticPage> {
               'Your top 3 worst cards',
               style: TextStyle(
                 fontSize: 20.0,
-                color: Colors.white,
+                color: Colors.white70,
               ),
             ),
             SizedBox(height: 16.0),
@@ -136,6 +136,8 @@ class _StatisticPageState extends State<StatisticPage> {
   }
 
   Widget _buildHalfRedBlackBox(double percent) {
+    Random random = Random();
+    int randomNumber = random.nextInt(101);
     return Container(
       height: 50.0,
       child: Stack(
@@ -153,11 +155,11 @@ class _StatisticPageState extends State<StatisticPage> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 30,
+                  flex: randomNumber,
                   child: Container(color: Color(0xFF001125)),
                 ),
                 Expanded(
-                  flex: 70,
+                  flex: 100 - randomNumber,
                   child: Container(color: Colors.white70),
                 ),
               ],
@@ -167,7 +169,7 @@ class _StatisticPageState extends State<StatisticPage> {
             top: 8.0,
             left: 8.0,
             child: Text(
-              percent.toStringAsFixed(2) + '%',
+              randomNumber.toStringAsFixed(2) + '%',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.white,

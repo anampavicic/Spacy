@@ -81,6 +81,7 @@ class _AddThemeDetailsPageState extends State<AddThemeDetailsPage> {
         decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
             backgroundColor: Colors.transparent,
+            resizeToAvoidBottomInset: false,
             body: Center(
               child: Form(
                 key: _formKey,

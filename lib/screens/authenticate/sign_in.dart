@@ -27,6 +27,7 @@ class _SignInState extends State<SignIn> {
     return Container(
         decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.transparent,
           body: Center(
             child: Form(

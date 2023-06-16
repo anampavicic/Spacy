@@ -72,53 +72,67 @@ class _HomeState extends State<Home> {
     return Container(
         decoration: GradientBoxDecoration.gradientBoxDecoration,
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _words.map((word) {
-                    int index = _words.indexOf(word);
-                    bool isSelected = _selectedIndex == index;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: isSelected
-                                    ? Colors.white
-                                    : Colors.transparent,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8.0),
-                                child: Text(
-                                  word.toUpperCase(),
-                                  style: TextStyle(
-                                    color: isSelected
-                                        ? Colors.black
-                                        : Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await _auth.signOut();
+                    widget.toggleView();
+                  },
+                  icon: Icon(Icons.logout,
+                      color: Colors.white), // Add logout button icon
+                ),
+              ],
+              title: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _words.map((word) {
+                      int index = _words.indexOf(word);
+                      bool isSelected = _selectedIndex == index;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
+                                  child: Text(
+                                    word.toUpperCase(),
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? Colors.black
+                                          : Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                )),
+                      );
+                    }).toList(),
+                  )),
+            ),
             body: ThemeButtonList(
               getThemes: getThemes,
             ),

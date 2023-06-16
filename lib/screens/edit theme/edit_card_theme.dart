@@ -172,6 +172,7 @@ class _EditCardThemePageState extends State<EditCardThemePage> {
       decoration: GradientBoxDecoration.gradientBoxDecoration,
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
         body: Center(
           child: Form(
             key: _formKey,
