@@ -2,11 +2,13 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 import '../models/chart_data.dart';
+import '../models/statistic_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar_one_button.dart';
 
 class StatisticPage extends StatefulWidget {
-  const StatisticPage({super.key});
+  final StatisticTheme statisticTheme;
+  const StatisticPage({super.key, required this.statisticTheme});
 
   //const SignIn({Key? key}) : super(key: key);
 
@@ -39,36 +41,88 @@ class _StatisticPageState extends State<StatisticPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
-            _buildHalfRedBlackBox(),
-            SizedBox(height: 16.0),
-            _buildHalfRedBlackBox(),
-            SizedBox(height: 16.0),
-            _buildLineChart(),
-            SizedBox(height: 16.0),
-            _buildLineChart(),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
             Text(
-              '3 Best Cards',
-              style: TextStyle(fontSize: 18.0),
+              'Successfully completed cards',
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 10.0),
+            _buildHalfRedBlackBox(
+                widget.statisticTheme.percantageOfSolvedCardsByUser),
+            Text(
+              'Completed by you',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white70,
+              ),
             ),
             SizedBox(height: 16.0),
-            _buildCardBox(),
-            SizedBox(height: 16.0),
-            _buildCardBox(),
-            SizedBox(height: 16.0),
-            _buildCardBox(),
-            SizedBox(height: 16.0),
+            _buildHalfRedBlackBox(
+                widget.statisticTheme.percantageOfSolvedCardsByEveryOne),
             Text(
-              'Top 3 Worst Cards',
-              style: TextStyle(fontSize: 18.0),
+              'Completed by everyone',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Text(
+              'Successfully completed cards per day',
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 16.0),
-            _buildCardBox(),
+            _buildLineChart(widget.statisticTheme.graphUser),
+            Text(
+              'Completed by you',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white70,
+              ),
+            ),
             SizedBox(height: 16.0),
-            _buildCardBox(),
+            _buildLineChart(widget.statisticTheme.graphEveryOne),
+            Text(
+              'Completed by everyone',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white70,
+              ),
+            ),
             SizedBox(height: 16.0),
-            _buildCardBox(),
+            Text(
+              'Your top 3 best cards',
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.topTreeCards[0]),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.topTreeCards[1]),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.topTreeCards[2]),
+            SizedBox(height: 16.0),
+            Text(
+              'Your top 3 worst cards',
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.worstTreeCards[0]),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.worstTreeCards[1]),
+            SizedBox(height: 16.0),
+            _buildCardBox(widget.statisticTheme.worstTreeCards[2]),
           ],
         ),
         bottomNavigationBar: CustomConvexBottomAppBarOneButton(
@@ -79,28 +133,39 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
-  Widget _buildHalfRedBlackBox() {
+  Widget _buildHalfRedBlackBox(double percent) {
     return Container(
       height: 50.0,
       child: Stack(
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 30,
-                child: Container(color: Colors.red),
-              ),
-              Expanded(
-                flex: 70,
-                child: Container(color: Colors.black),
-              ),
-            ],
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4.0,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 30,
+                  child: Container(color: Color(0xFF001125)),
+                ),
+                Expanded(
+                  flex: 70,
+                  child: Container(color: Colors.white70),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 8.0,
             left: 8.0,
             child: Text(
-              '30%',
+              percent.toStringAsFixed(2) + '%',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.white,
@@ -112,44 +177,67 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
-  Widget _buildLineChart() {
-    final data = [
-      ChartData(0, 40),
-      ChartData(1, 60),
-      ChartData(2, 80),
-      ChartData(2, 80),
-      ChartData(2, 80),
-      ChartData(2, 80),
-      ChartData(2, 80),
-      ChartData(4, 70),
-      ChartData(4, 70),
-    ];
-
+  Widget _buildLineChart(List<ChartData> d) {
+    var data = d.toSet();
     return Container(
-      height: 200.0,
+      color: Colors.white.withOpacity(0.8),
+      height: 150.0,
       child: charts.LineChart(
         [
           charts.Series<ChartData, int>(
             id: 'chartData',
-            colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+            colorFn: (_, __) =>
+                charts.ColorUtil.fromDartColor(Color(0xFF001125)),
             domainFn: (ChartData data, _) => data.x,
             measureFn: (ChartData data, _) => data.y,
-            data: data,
+            data: d,
           ),
         ],
         animate: true,
+        domainAxis: charts.NumericAxisSpec(
+          showAxisLine: true,
+          renderSpec: charts.GridlineRendererSpec(
+            lineStyle:
+                charts.LineStyleSpec(color: charts.MaterialPalette.transparent),
+            labelStyle: charts.TextStyleSpec(
+              fontSize: 0, // Remove numbers on x-axis
+            ),
+            axisLineStyle: charts.LineStyleSpec(
+                color: charts.MaterialPalette.gray.shadeDefault, thickness: 1),
+          ),
+        ),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+          showAxisLine: true,
+          renderSpec: charts.GridlineRendererSpec(
+            lineStyle:
+                charts.LineStyleSpec(color: charts.MaterialPalette.transparent),
+            labelStyle: charts.TextStyleSpec(
+              fontSize: 10, // Remove numbers on x-axis
+            ),
+            axisLineStyle: charts.LineStyleSpec(
+                color: charts.MaterialPalette.gray.shadeDefault, thickness: 1),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildCardBox() {
+  Widget _buildCardBox(String name) {
     return Container(
-      height: 100.0,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        border: Border.all(color: Colors.black),
-      ),
-    );
+        height: 50.0,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white70,
+          border: Border.all(color: Colors.black),
+        ),
+        child: Center(
+          child: Text(
+            name,
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.black,
+            ),
+          ),
+        ));
   }
 }

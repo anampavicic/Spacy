@@ -66,10 +66,16 @@ class _StatisticThemeButtonListState extends State<StatisticThemeButtonList> {
                     ),
                     child: ElevatedButton(
                       onPressed: () async {
+                        var statisticTheme =
+                            await themeService.getStatisticTheme(
+                                authService.getCurrentUser().toString(),
+                                theme.uid.toString());
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => StatisticPage(),
+                            builder: (context) => StatisticPage(
+                              statisticTheme: statisticTheme,
+                            ),
                           ),
                         );
                         // Perform actions when the button is pressed

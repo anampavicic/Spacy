@@ -43,4 +43,25 @@ class UserCardService {
     });
     return cards;
   }
+
+  ///get user cards for the theme
+  Future<List<UserCardData>> getUserCardsForTheme(String themeId) async {
+    List<UserCardData> cards = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('user-card')
+        .where('themeId', isEqualTo: themeId)
+        .get();
+
+    querySnapshot.docs.forEach((doc) {
+      cards.add(UserCardData(
+          uid: doc.id,
+          cardId: doc['cardId'],
+          userId: doc['userId'],
+          themeId: doc['themeId'],
+          completed: doc['completed'],
+          dataCompleted: doc['dataCompleted'].toDate()));
+    });
+    return cards;
+  }
 }

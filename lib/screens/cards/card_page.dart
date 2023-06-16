@@ -30,8 +30,8 @@ class _CardPageState extends State<CardPage> {
   final UserCardService _userCard = UserCardService();
 
   void noButtomInBottomBar() async {
-    await _userCard.addUserCard(widget.cards[_currentIndex].themeId.toString(),
-        widget.userId, widget.cards[_currentIndex].uid.toString(), false);
+    await _userCard.addUserCard(widget.theme.uid.toString(), widget.userId,
+        widget.cards[_currentIndex].uid.toString(), false);
 
     if (this._currentIndex == widget.cards.length - 1) {
       this._currentIndex = 0;

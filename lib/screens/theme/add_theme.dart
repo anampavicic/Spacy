@@ -62,8 +62,7 @@ class _AddThemeToggleView extends State<AddThemeToggleView> {
   }
 
   void addThemeWithCards() async {
-    var id = await _theme.addThemeNew(
-        themeName!, deadline, 1, DateTime.now().add(Duration(days: 1)));
+    var id = await _theme.addThemeNew(themeName!, deadline, 1, DateTime.now());
     for (var card in cards) {
       card.themeId = id;
       await _card.addCardNew(card);

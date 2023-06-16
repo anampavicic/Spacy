@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spacy/models/card.dart';
 import 'package:spacy/models/user_card.dart';
+import 'package:spacy/screens/models/chart_data.dart';
 import 'package:spacy/services/card.dart';
 import 'package:spacy/services/database.dart';
 import 'package:spacy/services/user_card.dart';
 
 import '../models/theme.dart';
+import '../screens/models/statistic_theme.dart';
 
 class ThemeService {
   final UserService _userService = UserService();
@@ -138,18 +140,159 @@ class ThemeService {
 
       List<UserCardData> userCards =
           await _userCardService.getUserCardsForThemeAndUser(themeId, userId);
+
       int succesfulyCompleted = 0;
       for (var userCard in userCards) {
         if (userCard.completed) {
           succesfulyCompleted++;
         }
       }
+
       theme.percentOfSolvedCardsForUser =
           succesfulyCompleted / userCards.length;
       theme.cards = cards;
       themes.add(theme);
     }
     return themes;
+  }
+
+  ///Get statistic theme
+  Future<StatisticTheme> getStatisticTheme(
+      String userId, String themeId) async {
+    //get usrer card for user and theme
+    List<UserCardData> userCardsForUser =
+        await _userCardService.getUserCardsForThemeAndUser(themeId, userId);
+
+    //get user cards for theme
+    List<UserCardData> userCardsForEveryOne =
+        await _userCardService.getUserCardsForTheme(themeId);
+
+    //calculate percantageOfSolvedCardsByUser
+    var sucesfullyComeptedByUser = 0;
+    for (var userCard in userCardsForUser) {
+      if (userCard.completed) {
+        sucesfullyComeptedByUser++;
+      }
+    }
+    double percantageOfSolvedCardsByUser =
+        sucesfullyComeptedByUser / userCardsForUser.length;
+    percantageOfSolvedCardsByUser *= 100;
+
+    //calculate percantageOfSolvedCardsByEveryOne
+    var sucesfullyComeptedEveryOne = 0;
+    for (var userCard in userCardsForEveryOne) {
+      if (userCard.completed) {
+        sucesfullyComeptedEveryOne++;
+      }
+    }
+    double percantageOfSolvedCardsByEveryOne =
+        sucesfullyComeptedEveryOne / userCardsForEveryOne.length;
+    percantageOfSolvedCardsByEveryOne *= 100;
+
+    userCardsForUser.sort((a, b) => a.dataCompleted.compareTo(b.dataCompleted));
+    userCardsForEveryOne
+        .sort((a, b) => a.dataCompleted.compareTo(b.dataCompleted));
+
+    //get graph data for user
+    List<List<UserCardData>> graohData = [];
+    DateTime firstDay = userCardsForUser[0].dataCompleted;
+    //add one day
+    firstDay.add(Duration(days: 1));
+
+    List<UserCardData> forOneData = [];
+    for (var usercard in userCardsForUser) {
+      if (usercard.dataCompleted.isBefore(firstDay)) {
+        forOneData.add(usercard);
+      } else {
+        graohData.add(forOneData);
+        forOneData = [];
+        forOneData.add(usercard);
+        firstDay = usercard.dataCompleted.add(Duration(days: 1));
+      }
+    }
+    graohData.add(forOneData);
+
+    //get graph data for user
+    List<List<UserCardData>> graohDataEveryone = [];
+    DateTime firstDayEveryOne = userCardsForEveryOne[0].dataCompleted;
+    //add one day
+    firstDay.add(Duration(days: 1));
+
+    List<UserCardData> forOneDataEveryone = [];
+    for (var usercard in userCardsForEveryOne) {
+      if (usercard.dataCompleted.isBefore(firstDay)) {
+        forOneDataEveryone.add(usercard);
+      } else {
+        graohDataEveryone.add(forOneDataEveryone);
+        forOneDataEveryone = [];
+        forOneDataEveryone.add(usercard);
+        firstDay = usercard.dataCompleted.add(Duration(days: 1));
+      }
+    }
+    graohDataEveryone.add(forOneData);
+
+    List<ChartData> chartDataUser = [];
+    int i = 1;
+    for (var list in graohData) {
+      int sucess = 0;
+      for (var userdcard in list) {
+        if (userdcard.completed) {
+          sucess++;
+        }
+      }
+      double percant = (sucess / list.length) * 100;
+      var data = ChartData(i, percant);
+      chartDataUser.add(data);
+      i++;
+    }
+
+    //get chart data for everyone
+    List<ChartData> chartDataEveryOne = [];
+    int j = 1;
+    for (var list in graohDataEveryone) {
+      int sucess = 0;
+      for (var userdcard in list) {
+        if (userdcard.completed) {
+          sucess++;
+        }
+      }
+      double percant = (sucess / list.length) * 100;
+      var data = ChartData(j, percant);
+      chartDataEveryOne.add(data);
+      j++;
+    }
+    chartDataEveryOne.add(ChartData(0, 0));
+    chartDataUser.add(ChartData(0, 0));
+
+    List<FlashCard> cards = await _cardService.getFlashCardsIdForTheme(themeId);
+
+    List<String> topThreeCards = [];
+    List<String> worstThreeCards = [];
+    for (int i = 0; i < cards.length && i < 3; i++) {
+      topThreeCards.add(cards[i].question);
+    }
+    cards = cards.reversed.toList();
+    for (int i = 0; i < cards.length && i < 3; i++) {
+      worstThreeCards.add(cards[i].question);
+    }
+    print('graph chartDataUser');
+    for (var user in chartDataUser) {
+      print(user.x);
+      print(user.y);
+    }
+
+    print('graph chartDataEveryOne');
+    for (var user in chartDataEveryOne) {
+      print(user.x);
+      print(user.y);
+    }
+    return StatisticTheme(
+        percantageOfSolvedCardsByUser,
+        percantageOfSolvedCardsByEveryOne,
+        chartDataUser,
+        chartDataEveryOne,
+        topThreeCards,
+        worstThreeCards);
   }
 
   Future<String> addTheme(themeData) async {
