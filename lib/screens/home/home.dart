@@ -5,7 +5,7 @@ import 'package:spacy/services/user_card.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
-import '../theme/add_theme.dart';
+import '../add theme/add_theme.dart';
 import '../utilities/background.dart';
 import '../utilities/convex_app_bar.dart';
 import 'ThemeButtonList.dart';
@@ -30,7 +30,6 @@ class _HomeState extends State<Home> {
   @override
   int _selectedIndex = 0;
   List<String> _words = ['Today', 'Active', 'All'];
-  String Id = "Ana"; //delete this when you get the chance
 
   Future<List<SpacyTheme>> getThemes() async {
     var userId = _auth.getCurrentUser().toString();
@@ -137,9 +136,9 @@ class _HomeState extends State<Home> {
               getThemes: getThemes,
             ),
             bottomNavigationBar: CustomConvexBottomAppBar(
-              rightIcon: Icons.article,
+              leftIcon: Icons.article,
               middleIcon: Icons.add,
-              leftIcon: Icons.bar_chart,
+              rightIcon: Icons.bar_chart,
               rightButtonPressed: rightButton,
               middleButtonPressed: middleButton,
               leftButtonPressed: leftButton,
